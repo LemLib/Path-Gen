@@ -1,0 +1,7 @@
+body {
+    background-color: #053511;
+}
+
+.fieldCanvas {
+    border:1px solid hwb(0 0% 100%);
+}

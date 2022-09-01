@@ -1,0 +1,26 @@
+{
+  "name": "path-gen",
+  "version": "1.0.0",
+  "description": "Path Generator for use in robotics applications",
+  "main": "index.js",
+  "scripts": {
+    "test": "console.log('Ran successfully');"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SizzinSeal/Path-Gen.git"
+  },
+  "keywords": [
+    "VRC"
+  ],
+  "author": "Liam Teale",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/SizzinSeal/Path-Gen/issues"
+  },
+  "homepage": "https://github.com/SizzinSeal/Path-Gen#readme",
+  "devDependencies": {
+    "eslint": "^8.23.0",
+    "eslint-config-google": "^0.14.0"
+  }
+}
