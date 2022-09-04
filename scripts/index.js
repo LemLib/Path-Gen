@@ -58,3 +58,28 @@ canvasQuery.oncontextmenu = function(e) {
   e.preventDefault();
   console.log(getCursorPosition(canvasQuery, e));
 };
+
+
+const p1 = new Point(0, 0);
+const p2 = new Point(0, 50);
+const p3 = new Point(25, 70);
+const p4 = new Point(50, 50);
+const s = new Spline(p1, p2, p3, p4);
+
+/**
+ * @brief draw the spline
+ */
+function drawSpline() {
+  s.generatePoints(3);
+
+  for (let i = 0; i < s.points.length - 1; i++) {
+    const startPoint = coordToPx(s.points[i]);
+    const endPoint = coordToPx(s.points[i+1]);
+    ctx.beginPath();
+    ctx.lineWidth = 10;
+    ctx.moveTo(startPoint.x, startPoint.y);
+    ctx.lineTo(endPoint.x, endPoint.y);
+    ctx.stroke();
+    ctx.closePath();
+  }
+};

@@ -35,8 +35,33 @@ class Point {
   constructor(x, y) {
     this.x = x;
     this.y = y;
-  }
-}
+  };
+};
+
+
+/**
+ * @brief Vector class
+ */
+class Vector {
+  /**
+   * @brief Constructor for Vector
+   * @param {Point} p1 - start point
+   * @param {Point} p2 - end point
+   */
+  constructor(p1, p2) {
+    this.p1 = p1;
+    this.p2 = p2;
+  };
+
+  /**
+   * @brief get the length of the vector
+   * @return {number} - the length of the vector
+   */
+  getMagnitude() {
+    return Math.sqrt(Math.pow(this.p2.x - this.p1.x, 2) +
+                     Math.pow(this.p2.y - this.p1.y, 2));
+  };
+};
 
 
 /**
