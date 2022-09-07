@@ -185,7 +185,6 @@ class Path {
         this.points2.push(p3);
         this.points2[this.points2.length - 1].distance = u;
       }
-      console.log(T);
     }
   };
 };
