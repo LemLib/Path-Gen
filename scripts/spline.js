@@ -149,10 +149,10 @@ class Path {
     this.length = this.points[this.points.length - 1].distance;
 
     // init points2
-    this.points2 = [];
-
+    // this.points2 = [];
     // space out the points on the curve
-
+    // TODO: remove this, its not needed
+    /**
     const newSpacing = 1/(spacing-1);
     // map T onto t
     for (let T = 0; T < 1.00001; T += newSpacing) {
@@ -183,6 +183,33 @@ class Path {
         const p3 = v.interpolate(u - p1.distance);
         this.points2.push(p3);
         this.points2[this.points2.length - 1].distance = u;
+      }
+    }
+    */
+    // calculate the velocity
+    /**
+    this.points2[0].velocity = maxSpeed;
+    this.points2[this.points2.length - 1].velocity = maxSpeed;
+    for (let i = 1; i < this.points2.length - 1; i++) {
+      const curvature = calcCurvature(this.points2[i-1],
+          this.points2[i],
+          this.points2[i+1]);
+      const velocity = curvatureMultiplier / curvature; // velocity calculation
+      this.points2[i].velocity = Math.min(maxSpeed, velocity);
+    }
+    */
+
+    // generate velocities
+    for (let i = 0; i < this.points.length-1; i++) {
+      const p1 = this.points[i];
+      const p2 = this.points[i+1];
+
+      const v = new Vector(p1, p2);
+      const vel = Math.min(maxSpeed, curvatureMultiplier*v.getMagnitude());
+      this.points[i].velocity = vel;
+
+      if (i == this.points.length - 2) {
+        this.points[i+1].velocity = vel;
       }
     }
   };

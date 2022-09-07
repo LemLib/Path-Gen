@@ -1,17 +1,6 @@
 const path = new Path(); // robot path
 
 
-// user settings
-let lookaheadDistance = 24; // the lookahead distance
-let curvatureMultiplier = 1; // how fast the robot moves over sharp curves
-let maxSpeed = 62.8318530718; // inches per second
-let maxAccel = 1; // inches per second per second
-let maxDecel = 1; // inches per second per second
-let trackWidth = 17; // robot track width in inches
-let precision = 10000; // how many raw points to generate per spline
-let inchesPerPoint = 5; // this will be approximated
-
-
 /**
  * @brief function that runs when the window loads
  */
@@ -47,6 +36,25 @@ function getCursorPosition(canvas, event) {
       event.clientY - rect.top);
   return mousePoint;
 };
+
+
+/**
+ * @brief convert an HSl color code to Hex
+ * @param {number} h - the hue
+ * @param {number} s - the saturation
+ * @param {number} l - the lightness
+ * @return {string} - the hex color code
+ */
+function hslToHex(h, s, l) {
+  l /= 100;
+  const a = s * Math.min(l, 1 - l) / 100;
+  const f = (n) => {
+    const k = (n + h / 30) % 12;
+    const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+    return Math.round(255 * color).toString(16).padStart(2, '0');
+  };
+  return `#${f(0)}${f(8)}${f(4)}`;
+}
 
 
 /**
@@ -98,15 +106,27 @@ function drawSpline() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   ctx.drawImage(img, 0, 0, img.width, img.height, // source rectangle
       0, 0, canvas.width, canvas.height); // destination rectangle
-
   // draw spline
-  for (let i = 0; i < path.points2.length; i++) {
-    const p1 = coordToPx(path.points2[i]);
+  for (let i = 0; i < path.points.length; i++) {
+    const p1 = coordToPx(path.points[i]);
+    // draw the points
     const radiusSetting = 0.5;
     const radius = radiusSetting * imgPixelsPerInch;
+    ctx.fillStyle = hslToHex((path.points[i].velocity/maxSpeed)*180, 100, 50);
+    ctx.strokeStyle = ctx.fillStyle;
     ctx.beginPath();
     ctx.arc(p1.x, p1.y, radius, 0, 2 * Math.PI);
     ctx.stroke();
+    ctx.fill();
     ctx.closePath();
+    // draw the lines
+    if (i < path.points.length - 1) {
+      const p2 = coordToPx(path.points[i + 1]);
+      ctx.beginPath();
+      ctx.moveTo(p1.x, p1.y);
+      ctx.lineTo(p2.x, p2.y);
+      ctx.stroke();
+      ctx.closePath();
+    }
   }
 };
