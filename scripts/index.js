@@ -1,6 +1,17 @@
 const path = new Path(); // robot path
 
 
+// user settings
+let lookaheadDistance = 24; // the lookahead distance
+let curvatureMultiplier = 1; // how fast the robot moves over sharp curves
+let maxSpeed = 62.8318530718; // inches per second
+let maxAccel = 1; // inches per second per second
+let maxDecel = 1; // inches per second per second
+let trackWidth = 17; // robot track width in inches
+let precision = 10000; // how many raw points to generate per spline
+let inchesPerPoint = 5; // this will be approximated
+
+
 /**
  * @brief function that runs when the window loads
  */
@@ -17,6 +28,8 @@ window.onload = function() {
   const startSpline = new Spline(startP1, startP2, startP3, startP4);
   path.addSpline(startSpline);
 
+  // update path length
+  path.genPoints(precision, 10);
   // draw the path
   drawSpline();
 };
@@ -78,7 +91,8 @@ canvasQuery.oncontextmenu = function(e) {
  * @brief draw the spline
  */
 function drawSpline() {
-  path.genPoints(10000, (60)*path.splines.length);
+  const finalSpacing = Math.round(path.length / inchesPerPoint);
+  path.genPoints(precision, finalSpacing);
 
   // draw image
   ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -86,12 +100,12 @@ function drawSpline() {
       0, 0, canvas.width, canvas.height); // destination rectangle
 
   // draw spline
-  for (let i = 0; i < path.points2.length - 1; i++) {
+  for (let i = 0; i < path.points2.length; i++) {
     const p1 = coordToPx(path.points2[i]);
-    const p2 = coordToPx(path.points2[i+1]);
+    const radiusSetting = 0.5;
+    const radius = radiusSetting * imgPixelsPerInch;
     ctx.beginPath();
-    ctx.moveTo(p1.x, p1.y);
-    ctx.lineTo(p2.x, p2.y);
+    ctx.arc(p1.x, p1.y, radius, 0, 2 * Math.PI);
     ctx.stroke();
     ctx.closePath();
   }

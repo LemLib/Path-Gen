@@ -152,11 +152,8 @@ class Path {
     this.points2 = [];
 
     // space out the points on the curve
-    // this is done by arc parametrization
-    // for now we have const T value, but this should be changed to be
-    // a nested for loop that goes through T values in equal increments
-    const newSpacing = 1/(spacing-1);
 
+    const newSpacing = 1/(spacing-1);
     // map T onto t
     for (let T = 0; T < 1.00001; T += newSpacing) {
       const u = T * this.length;
@@ -172,11 +169,13 @@ class Path {
       }
 
       // if the point we found is an exact match, we can just save it
-      // eslint-disable-next-line max-len
-      if (this.points[closestIndex].distance == u || closestIndex == this.points.length - 1) {
+      if (this.points[closestIndex].distance == u) {
         this.points2.push(this.points[closestIndex]);
         this.points2[this.points2.length - 1].distance = u;
-        // otherwise we need to interpolate (99.99% of cases)
+      } else if (closestIndex == this.points.length - 1) {
+        this.points2.push(this.points[closestIndex]);
+        this.points2[this.points2.length - 1].distance = u;
+      // otherwise we need to interpolate (99.99% of cases)
       } else {
         const p1 = this.points[closestIndex];
         const p2 = this.points[closestIndex + 1];
