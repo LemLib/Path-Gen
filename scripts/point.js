@@ -36,6 +36,11 @@ class Point {
     this.x = x;
     this.y = y;
   };
+
+  /**
+   * @brief the distance of the point from the start of the spline
+   */
+  distance = 0;
 };
 
 
@@ -60,6 +65,28 @@ class Vector {
   getMagnitude() {
     return Math.sqrt(Math.pow(this.p2.x - this.p1.x, 2) +
                      Math.pow(this.p2.y - this.p1.y, 2));
+  };
+
+  /**
+   * @brief get the angle of the vector
+   * @return {number} - the angle of the vector in radians
+   */
+  getAngle() {
+    return Math.atan2(this.p2.y - this.p1.y, this.p2.x - this.p1.x);
+  };
+
+  /**
+   * @brief interpolate between two points
+   * @param {number} d - the distance
+   * @return {Point} - the interpolated point
+   */
+  interpolate(d) {
+    // use trig to find the angle between the two points
+    const angle = this.getAngle();
+    // use the angle to find the x and y components of the vector
+    const x = (d * Math.cos(angle)) + this.p1.x;
+    const y = (d * Math.sin(angle)) + this.p1.y;
+    return new Point(x, y);
   };
 };
 

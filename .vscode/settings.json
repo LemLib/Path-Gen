@@ -1,7 +1,8 @@
 {
     "pros.showInstallOnStartup": false,
     "cSpell.words": [
-        "coeffs"
+        "coeffs",
+        "timestep"
     ],
     "editor.tabSize": 2
 }

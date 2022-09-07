@@ -1,12 +1,6 @@
 let lastPoint = new Point(-2, 0);
 
 
-// array containing all the waypoints on the canvas
-let waypoints = [];
-// array containing all the path segments
-let pathSegments = [];
-
-
 /**
  * @brief function that runs when the window loads
  */
@@ -64,21 +58,37 @@ const p1 = new Point(0, 0);
 const p2 = new Point(0, 50);
 const p3 = new Point(25, 70);
 const p4 = new Point(50, 50);
+
+const p5 = new Point(50, 50);
+const p6 = new Point(75, 75);
+const p7 = new Point(125, 20);
+const p8 = new Point(150, 50);
 const s = new Spline(p1, p2, p3, p4);
+const s2 = new Spline(p5, p6, p7, p8);
+const p = new Path();
+p.addSpline(s);
+p.addSpline(s2);
 
 /**
  * @brief draw the spline
  */
 function drawSpline() {
-  s.generatePoints(3);
+  p.genPoints(10000, 60);
+  let message = '';
 
-  for (let i = 0; i < s.points.length - 1; i++) {
-    const startPoint = coordToPx(s.points[i]);
-    const endPoint = coordToPx(s.points[i+1]);
+  // print out spline points coordinates for debug
+  for (let i = 0; i < p.points2.length; i++) {
+    message = message + ('(' + p.points2[i].x + ', ' + p.points2[i].y + ')\n');
+  }
+  console.log(message);
+
+  // draw spline
+  for (let i = 0; i < p.points2.length - 1; i++) {
+    const p1 = coordToPx(p.points2[i]);
+    const p2 = coordToPx(p.points2[i+1]);
     ctx.beginPath();
-    ctx.lineWidth = 10;
-    ctx.moveTo(startPoint.x, startPoint.y);
-    ctx.lineTo(endPoint.x, endPoint.y);
+    ctx.moveTo(p1.x, p1.y);
+    ctx.lineTo(p2.x, p2.y);
     ctx.stroke();
     ctx.closePath();
   }
