@@ -106,13 +106,42 @@ function drawSpline() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   ctx.drawImage(img, 0, 0, img.width, img.height, // source rectangle
       0, 0, canvas.width, canvas.height); // destination rectangle
+
+  // draw control points
+  for (let i = 0; i < path.splines.length; i++) {
+    const p1 = coordToPx(path.splines[i].p1);
+    const p2 = coordToPx(path.splines[i].p2);
+    const p3 = coordToPx(path.splines[i].p3);
+    const p4 = coordToPx(path.splines[i].p4);
+    ctx.fillStyle = hslToHex(140, 50, 50);
+    ctx.beginPath();
+    ctx.arc(p1.x, p1.y, 2*imgPixelsPerInch, 0, 2*Math.PI);
+    ctx.arc(p2.x, p2.y, 2*imgPixelsPerInch, 0, 2*Math.PI);
+    ctx.fill();
+    ctx.closePath();
+    ctx.beginPath();
+    ctx.moveTo(p1.x, p1.y);
+    ctx.lineTo(p2.x, p2.y);
+    ctx.stroke();
+    ctx.closePath();
+    ctx.beginPath();
+    ctx.moveTo(p3.x, p3.y);
+    ctx.lineTo(p4.x, p4.y);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(p3.x, p3.y, 2*imgPixelsPerInch, 0, 2*Math.PI);
+    ctx.arc(p4.x, p4.y, 2*imgPixelsPerInch, 0, 2*Math.PI);
+    ctx.fill();
+    ctx.closePath();
+  }
+
   // draw spline
-  for (let i = 0; i < path.points.length; i++) {
-    const p1 = coordToPx(path.points[i]);
+  for (let i = 0; i < path.points2.length; i++) {
+    const p1 = coordToPx(path.points2[i]);
     // draw the points
     const radiusSetting = 0.5;
     const radius = radiusSetting * imgPixelsPerInch;
-    ctx.fillStyle = hslToHex((path.points[i].velocity/maxSpeed)*180, 100, 50);
+    ctx.fillStyle = hslToHex((path.points2[i].velocity/maxSpeed)*180, 100, 50);
     ctx.strokeStyle = ctx.fillStyle;
     ctx.beginPath();
     ctx.arc(p1.x, p1.y, radius, 0, 2 * Math.PI);
@@ -120,8 +149,8 @@ function drawSpline() {
     ctx.fill();
     ctx.closePath();
     // draw the lines
-    if (i < path.points.length - 1) {
-      const p2 = coordToPx(path.points[i + 1]);
+    if (i < path.points2.length - 1) {
+      const p2 = coordToPx(path.points2[i + 1]);
       ctx.beginPath();
       ctx.moveTo(p1.x, p1.y);
       ctx.lineTo(p2.x, p2.y);

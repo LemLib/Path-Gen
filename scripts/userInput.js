@@ -6,4 +6,4 @@ let maxAccel = 1; // inches per second per second
 let maxDecel = 1; // inches per second per second
 let trackWidth = 17; // robot track width in inches
 let precision = 100; // how many raw points to generate per spline
-let inchesPerPoint = 1; // this will be approximated
+let inchesPerPoint = 2; // this will be approximated
