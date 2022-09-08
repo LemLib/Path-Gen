@@ -25,20 +25,6 @@ window.onload = function() {
 
 
 /**
- * @brief function that returns the position of the mouse
- * @param {Event} canvas - the canvas
- * @param {Event} event - the event that is triggered (mouse click)
- * @return {Point} - the position of the mouse
- */
-function getCursorPosition(canvas, event) {
-  const rect = canvas.getBoundingClientRect();
-  const mousePoint = new Point(event.clientX - rect.left,
-      event.clientY - rect.top);
-  return mousePoint;
-};
-
-
-/**
  * @brief convert an HSl color code to Hex
  * @param {number} h - the hue
  * @param {number} s - the saturation
@@ -57,43 +43,133 @@ function hslToHex(h, s, l) {
 }
 
 
-/**
- * @brief when the canvas is left clicked
- * @param {Event} e - the event
- */
-canvasQuery.onclick = function(e) {
-  // get the position of the mouse in field coordinates
-  const mousePoint = pxToCoord(getCursorPosition(canvasQuery, e));
-
-  // generate points on the spline
-  // first point, same as the last control point of the last spline
-  const p1 = path.splines[path.splines.length - 1].p4;
-  // second point, same slope as the third control point of the last spline
-  // also has the same magnitude as the third control point of the last spline
-  // and the last point of the last spline
-  const p2CalcVector = new Vector(path.splines[path.splines.length - 1].p3, p1);
-  const p2 = p2CalcVector.interpolate(p2CalcVector.getMagnitude()*2);
-  // third point, just add 5 to the y coordinate of the mouse point
-  const p3 = new Point(mousePoint.x, mousePoint.y + 12);
-  // fourth point, same as the mouse point
-  const p4 = mousePoint;
-
-  // add the spline to the path
-  const spline = new Spline(p1, p2, p3, p4);
-  path.addSpline(spline);
-  drawSpline();
-};
-
+// initialize path inputs
+let mousePosition;
+let controlPointHold = false;
+let controlPointSpline = 0;
+let controlPointNumber = 0;
 
 /**
- * @brief when the canvas is right clicked
- * @param {Event} e - the event
+ * @brief function that returns the position of the mouse
+ * @param {Event} canvas - the canvas
+ * @param {Event} event - the event that is triggered (mouse click)
+ * @return {Point} - the position of the mouse
  */
-canvasQuery.oncontextmenu = function(e) {
-  e.preventDefault();
-  console.log(getCursorPosition(canvasQuery, e));
+function getCursorPosition(canvas, event) {
+  const rect = canvas.getBoundingClientRect();
+  const mousePoint = new Point(event.clientX - rect.left,
+      event.clientY - rect.top);
+  return mousePoint;
 };
 
+canvasQuery.onmousedown = function(event) {
+  for (let i = 0; i < path.splines.length; i++) {
+    // p1
+    const p1 = path.splines[i].p1;
+    const v1 = new Vector(p1, mousePosition);
+    if (v1.getMagnitude() < controlPointRadius*2) {
+      controlPointHold = true;
+      controlPointSpline = i;
+      controlPointNumber = 1;
+      break;
+    }
+    // p2
+    const p2 = path.splines[i].p2;
+    const v2 = new Vector(p2, mousePosition);
+    if (v2.getMagnitude() < controlPointRadius*2) {
+      controlPointHold = true;
+      controlPointSpline = i;
+      controlPointNumber = 2;
+      break;
+    }
+    // p3
+    const p3 = path.splines[i].p3;
+    const v3 = new Vector(p3, mousePosition);
+    if (v3.getMagnitude() < controlPointRadius*2) {
+      controlPointHold = true;
+      controlPointSpline = i;
+      controlPointNumber = 3;
+      break;
+    }
+    // p4
+    const p4 = path.splines[i].p4;
+    const v4 = new Vector(p4, mousePosition);
+    if (v4.getMagnitude() < controlPointRadius*2) {
+      controlPointHold = true;
+      controlPointSpline = i;
+      controlPointNumber = 4;
+      break;
+    }
+  }
+
+  // default behavior
+  if (!controlPointHold) {
+    // generate points on the spline
+    // first point, same as the last control point of the last spline
+    const p1 = path.splines[path.splines.length - 1].p4;
+    // second point, same slope as the third control point of the last spline
+    // also has the same magnitude as the third control point of the last spline
+    // and the last point of the last spline
+    const p2CalcVector = new Vector(path.splines[path.splines.length - 1].p3, p1);
+    const p2 = p2CalcVector.interpolate(p2CalcVector.getMagnitude()*2);
+    // third point, just add 5 to the y coordinate of the mouse point
+    const p3 = new Point(mousePosition.x, mousePosition.y + 12);
+    // fourth point, same as the mouse point
+    const p4 = mousePosition;
+
+    // add the spline to the path
+    const spline = new Spline(p1, p2, p3, p4);
+    path.addSpline(spline);
+    drawSpline();
+  }
+};
+
+canvasQuery.onmouseup = function(event) {
+  controlPointHold = false;
+};
+
+canvasQuery.onmousemove = function(event) {
+  mousePosition = pxToCoord(getCursorPosition(canvasQuery, event));
+  if (controlPointHold) {
+    switch (controlPointNumber) {
+      case 1:
+        if (controlPointSpline == 0) {
+          path.splines[controlPointSpline].p1 = mousePosition;
+        } else {
+          path.splines[controlPointSpline].p1 = mousePosition;
+          path.splines[controlPointSpline-1].p4 = mousePosition;
+        }
+        break;
+      case 2:
+        if (controlPointSpline == 0) {
+          path.splines[controlPointSpline].p2 = mousePosition;
+        } else {
+          const v = new Vector(path.splines[controlPointSpline].p1, mousePosition);
+          path.splines[controlPointSpline-1].p3 = v.interpolate(-v.getMagnitude());
+          path.splines[controlPointSpline].p2 = mousePosition;
+        }
+        break;
+      case 3:
+        if (controlPointSpline == path.splines.length-1) {
+          path.splines[controlPointSpline].p3 = mousePosition;
+        } else {
+          const v = new Vector(path.splines[controlPointSpline].p4, mousePosition);
+          path.splines[controlPointSpline+1].p2 = v.interpolate(-v.getMagnitude());
+          path.splines[controlPointSpline].p3 = mousePosition;
+        }
+        break;
+      case 4:
+        if (controlPointSpline == path.splines.length - 1) {
+          path.splines[controlPointSpline].p4 = mousePosition;
+        } else {
+          path.splines[controlPointSpline].p4 = mousePosition;
+          path.splines[controlPointSpline+1].p1 = mousePosition;
+        }
+        break;
+    }
+    drawSpline();
+  }
+};
 
 /**
  * @brief draw the spline
@@ -115,8 +191,8 @@ function drawSpline() {
     const p4 = coordToPx(path.splines[i].p4);
     ctx.fillStyle = hslToHex(140, 50, 50);
     ctx.beginPath();
-    ctx.arc(p1.x, p1.y, 2*imgPixelsPerInch, 0, 2*Math.PI);
-    ctx.arc(p2.x, p2.y, 2*imgPixelsPerInch, 0, 2*Math.PI);
+    ctx.arc(p1.x, p1.y, controlPointRadius*imgPixelsPerInch, 0, 2*Math.PI);
+    ctx.arc(p2.x, p2.y, controlPointRadius*imgPixelsPerInch, 0, 2*Math.PI);
     ctx.fill();
     ctx.closePath();
     ctx.beginPath();
@@ -129,14 +205,14 @@ function drawSpline() {
     ctx.lineTo(p4.x, p4.y);
     ctx.stroke();
     ctx.beginPath();
-    ctx.arc(p3.x, p3.y, 2*imgPixelsPerInch, 0, 2*Math.PI);
-    ctx.arc(p4.x, p4.y, 2*imgPixelsPerInch, 0, 2*Math.PI);
+    ctx.arc(p3.x, p3.y, controlPointRadius*imgPixelsPerInch, 0, 2*Math.PI);
+    ctx.arc(p4.x, p4.y, controlPointRadius*imgPixelsPerInch, 0, 2*Math.PI);
     ctx.fill();
     ctx.closePath();
   }
 
   // draw spline
-  for (let i = 0; i < path.points2.length; i++) {
+  for (let i = 0; i < path.points2.length; i++) { 
     const p1 = coordToPx(path.points2[i]);
     // draw the points
     const radiusSetting = 0.5;
