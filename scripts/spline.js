@@ -118,24 +118,9 @@ class Path {
   };
 
   /**
-   * @brief generate points on all splines with a specific tolerance
-   * @param {number} tolerance - how many points to generate per spline
-   * @param {number} spacing - the distance between points
-   * WARNING: this function is computationally expensive
-   * In future this should be GPU accelerated
+   * @brief calculate the distance of the path
    */
-  genPoints(tolerance, spacing) {
-    // generate points on all splines
-    for (let i = 0; i < this.splines.length; i++) {
-      this.splines[i].generatePoints(tolerance);
-    }
-
-    // combine all the splines into 1 array
-    this.points = [];
-    for (let i = 0; i < this.splines.length; i++) {
-      this.points = this.points.concat(this.splines[i].points);
-    }
-
+  genLength() {
     // calculate the distance from the start of the spline to each point
     for (let i = 0; i < this.points.length; i++) {
       if (i == 0) {
@@ -147,7 +132,12 @@ class Path {
     }
     // save the length of the spline
     this.length = this.points[this.points.length - 1].distance;
+  };
 
+  /**
+   * @brief generate velocities for each point
+   */
+  genVelocities() {
     // generate velocities
     for (let i = 0; i < this.points.length-1; i++) {
       const p1 = this.points[i];
@@ -161,7 +151,13 @@ class Path {
         this.points[i+1].velocity = vel;
       }
     }
+  };
 
+  /**
+   * @brief generate equally spaced points
+   * @param {number} spacing the number of points on the curve
+   */
+  genSpacedPoints(spacing) {
     // init points2
     this.points2 = [];
     // space out the points on the curve
@@ -202,5 +198,30 @@ class Path {
         this.points2[this.points2.length - 1].distance = u;
       }
     }
+  };
+
+  /**
+   * @brief generate points on all splines with a specific tolerance
+   * @param {number} tolerance - how many points to generate per spline
+   * @param {number} spacing - the distance between points
+   * WARNING: this function is computationally expensive
+   * In future this should be GPU accelerated
+   */
+  genPoints(tolerance, spacing) {
+    // generate points on all splines
+    for (let i = 0; i < this.splines.length; i++) {
+      this.splines[i].generatePoints(tolerance);
+    }
+
+    // combine all the splines into 1 array
+    this.points = [];
+    for (let i = 0; i < this.splines.length; i++) {
+      this.points = this.points.concat(this.splines[i].points);
+    }
+
+    // generate points on the path
+    this.genLength();
+    this.genVelocities();
+    this.genSpacedPoints(spacing);
   };
 };

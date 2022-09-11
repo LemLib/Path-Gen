@@ -19,8 +19,6 @@ window.onload = function() {
 
   // update path length
   path.genPoints(precision, 10);
-  // draw the path
-  drawSpline();
 };
 
 
@@ -117,7 +115,6 @@ canvasQuery.onmousedown = function(event) {
       // add the spline to the path
       const spline = new Spline(p1, p2, p3, p4);
       path.addSpline(spline);
-      drawSpline();
     }
   } else if (event.button == 2) {
     const v = new Vector(path.splines[path.splines.length-1].p4, mousePosition);
@@ -125,7 +122,6 @@ canvasQuery.onmousedown = function(event) {
       // remove the last spline
       path.splines.pop();
       path.genPoints(10000, 1);
-      drawSpline();
     }
   }
 };
@@ -177,7 +173,6 @@ canvasQuery.onmousemove = function(event) {
         }
         break;
     }
-    drawSpline();
   }
 };
 
@@ -249,6 +244,9 @@ function drawSpline() {
     }
   }
 };
+
+
+setInterval(drawSpline, 1000/60);
 
 
 /**
