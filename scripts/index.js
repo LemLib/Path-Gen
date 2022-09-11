@@ -203,11 +203,8 @@ function drawSpline() {
     const p3 = coordToPx(path.splines[i].p3);
     const p4 = coordToPx(path.splines[i].p4);
     ctx.fillStyle = hslToHex(140, 50, 50);
-    ctx.beginPath();
-    ctx.arc(p1.x, p1.y, controlPointRadius*imgPixelsPerInch, 0, 2*Math.PI);
-    ctx.arc(p2.x, p2.y, controlPointRadius*imgPixelsPerInch, 0, 2*Math.PI);
-    ctx.fill();
-    ctx.closePath();
+    ctx.strokeStyle = hslToHex(0, 0, 0);
+    // draw the lines between the control points
     ctx.beginPath();
     ctx.moveTo(p1.x, p1.y);
     ctx.lineTo(p2.x, p2.y);
@@ -217,6 +214,13 @@ function drawSpline() {
     ctx.moveTo(p3.x, p3.y);
     ctx.lineTo(p4.x, p4.y);
     ctx.stroke();
+    ctx.closePath();
+    // draw the control points
+    ctx.beginPath();
+    ctx.arc(p1.x, p1.y, controlPointRadius*imgPixelsPerInch, 0, 2*Math.PI);
+    ctx.arc(p2.x, p2.y, controlPointRadius*imgPixelsPerInch, 0, 2*Math.PI);
+    ctx.fill();
+    ctx.closePath();
     ctx.beginPath();
     ctx.arc(p3.x, p3.y, controlPointRadius*imgPixelsPerInch, 0, 2*Math.PI);
     ctx.arc(p4.x, p4.y, controlPointRadius*imgPixelsPerInch, 0, 2*Math.PI);
