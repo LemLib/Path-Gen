@@ -42,7 +42,7 @@ function hslToHex(h, s, l) {
 
 
 // initialize path inputs
-let mousePosition;
+let mousePos;
 let controlPointHold = false;
 let controlPointSpline = 0;
 let controlPointNumber = 0;
@@ -65,7 +65,7 @@ canvasQuery.onmousedown = function(event) {
     for (let i = 0; i < path.splines.length; i++) {
       // p1
       const p1 = path.splines[i].p1;
-      const v1 = new Vector(p1, mousePosition);
+      const v1 = new Vector(p1, mousePos);
       if (v1.getMagnitude() < controlPointRadius*2) {
         controlPointHold = true;
         controlPointSpline = i;
@@ -74,7 +74,7 @@ canvasQuery.onmousedown = function(event) {
       }
       // p2
       const p2 = path.splines[i].p2;
-      const v2 = new Vector(p2, mousePosition);
+      const v2 = new Vector(p2, mousePos);
       if (v2.getMagnitude() < controlPointRadius*2) {
         controlPointHold = true;
         controlPointSpline = i;
@@ -83,7 +83,7 @@ canvasQuery.onmousedown = function(event) {
       }
       // p3
       const p3 = path.splines[i].p3;
-      const v3 = new Vector(p3, mousePosition);
+      const v3 = new Vector(p3, mousePos);
       if (v3.getMagnitude() < controlPointRadius*2) {
         controlPointHold = true;
         controlPointSpline = i;
@@ -92,7 +92,7 @@ canvasQuery.onmousedown = function(event) {
       }
       // p4
       const p4 = path.splines[i].p4;
-      const v4 = new Vector(p4, mousePosition);
+      const v4 = new Vector(p4, mousePos);
       if (v4.getMagnitude() < controlPointRadius*2) {
         controlPointHold = true;
         controlPointSpline = i;
@@ -108,20 +108,24 @@ canvasQuery.onmousedown = function(event) {
       const p2V = new Vector(path.splines[path.splines.length - 1].p3, p1);
       const p2 = p2V.interpolate(p2V.getMagnitude()*2);
       // third point, just add 5 to the y coordinate of the mouse point
-      const p3 = new Point(mousePosition.x, mousePosition.y + 12);
+      const p3 = new Point(mousePos.x, mousePos.y + 12);
       // fourth point, same as the mouse point
-      const p4 = mousePosition;
+      const p4 = mousePos;
 
       // add the spline to the path
       const spline = new Spline(p1, p2, p3, p4);
       path.addSpline(spline);
     }
   } else if (event.button == 2) {
-    const v = new Vector(path.splines[path.splines.length-1].p4, mousePosition);
-    if (v.getMagnitude() < controlPointRadius*2 && path.splines.length > 1) {
+    const v1 = new Vector(path.splines[0].p1, mousePos);
+    const v4 = new Vector(path.splines[path.splines.length-1].p4, mousePos);
+    if (v4.getMagnitude() < controlPointRadius*2 && path.splines.length > 1) {
       // remove the last spline
       path.splines.pop();
-      path.genPoints(10000, 1);
+    }
+    if (v1.getMagnitude() < controlPointRadius*2 && path.splines.length > 1) {
+      // remove the first spline
+      path.splines.shift();
     }
   }
 };
@@ -131,45 +135,45 @@ canvasQuery.onmouseup = function(event) {
 };
 
 canvasQuery.onmousemove = function(event) {
-  mousePosition = pxToCoord(getCursorPosition(canvasQuery, event));
+  mousePos = pxToCoord(getCursorPosition(canvasQuery, event));
   if (controlPointHold) {
     switch (controlPointNumber) {
       case 1:
         if (controlPointSpline == 0) {
-          path.splines[controlPointSpline].p1 = mousePosition;
+          path.splines[controlPointSpline].p1 = mousePos;
         } else {
-          path.splines[controlPointSpline].p1 = mousePosition;
-          path.splines[controlPointSpline-1].p4 = mousePosition;
+          path.splines[controlPointSpline].p1 = mousePos;
+          path.splines[controlPointSpline-1].p4 = mousePos;
         }
         break;
       case 2:
         if (controlPointSpline == 0) {
-          path.splines[controlPointSpline].p2 = mousePosition;
+          path.splines[controlPointSpline].p2 = mousePos;
         } else {
           const p1 = path.splines[controlPointSpline].p1;
-          const v = new Vector(p1, mousePosition);
+          const v = new Vector(p1, mousePos);
           const p3 = v.interpolate(-v.getMagnitude());
           path.splines[controlPointSpline-1].p3 = p3;
-          path.splines[controlPointSpline].p2 = mousePosition;
+          path.splines[controlPointSpline].p2 = mousePos;
         }
         break;
       case 3:
         if (controlPointSpline == path.splines.length-1) {
-          path.splines[controlPointSpline].p3 = mousePosition;
+          path.splines[controlPointSpline].p3 = mousePos;
         } else {
           const p4 = path.splines[controlPointSpline].p4;
-          const v = new Vector(p4, mousePosition);
+          const v = new Vector(p4, mousePos);
           const p2 = v.interpolate(-v.getMagnitude());
           path.splines[controlPointSpline+1].p2 = p2;
-          path.splines[controlPointSpline].p3 = mousePosition;
+          path.splines[controlPointSpline].p3 = mousePos;
         }
         break;
       case 4:
         if (controlPointSpline == path.splines.length - 1) {
-          path.splines[controlPointSpline].p4 = mousePosition;
+          path.splines[controlPointSpline].p4 = mousePos;
         } else {
-          path.splines[controlPointSpline].p4 = mousePosition;
-          path.splines[controlPointSpline+1].p1 = mousePosition;
+          path.splines[controlPointSpline].p4 = mousePos;
+          path.splines[controlPointSpline+1].p1 = mousePos;
         }
         break;
     }
@@ -246,9 +250,8 @@ function drawSpline() {
 };
 
 
+// draw path every x seconds
 setInterval(drawSpline, 1000/60);
-
-
 /**
  * @brief log the path for use in the robot
  */
