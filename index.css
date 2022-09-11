@@ -4,4 +4,29 @@ body {
 
 .fieldCanvas {
     border:1px solid hwb(0 0% 100%);
+    float: left;
+}
+
+.sliderContainer {
+    display: flex;
+    flex-wrap: wrap;
+    padding-left: 0;
+}
+  
+.sliderContainer input {
+    list-style: none;
+    flex-basis: 40%;
+    color: white;
+}
+
+.sliderContainer output {
+    list-style: none;
+    flex-basis: 10%;
+    color: white;
+}
+
+.sliderContainer label {
+    list-style: none;
+    flex-basis: 40%;
+    color: white;
 }

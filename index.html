@@ -9,10 +9,35 @@
         <div>
             <canvas id="fieldCanvas" class="fieldCanvas" width="693" height="693"></canvas>
         </div>
+
+        <div class="sliderContainer">
+            <input type="range" value="2" min="1" max="5" step="0.01" oninput="this.nextElementSibling.value = this.value" id="lookahead">
+            <output class="text">2</output>
+            <label for="lookahead" class="text">Lookahead</label>
+            <input type="range" value="2" min="1" max="60" step="0.01" oninput="this.nextElementSibling.value = this.value" id="accel">
+            <output class="text">2</output>
+            <label for="accel" class="text">Accel</label>
+            <input type="range" value="2" min="1" max="60" step="0.01" oninput="this.nextElementSibling.value = this.value" id="decel">
+            <output class="text">2</output>
+            <label for="decel" class="text">Decel</label>
+            <input type="range" value="2" min="1" max="5" step="0.01" oninput="this.nextElementSibling.value = this.value" id="multiplier">
+            <output class="text">2</output>
+            <label for="multiplier" class="text">Speed Multiplier</label>
+            <input type="range" value="2" min="1" max="5" step="0.01" oninput="this.nextElementSibling.value = this.value" id="kV">
+            <output class="text">2</output>
+            <label for="kV" class="text">kV</label>
+            <input type="range" value="2" min="1" max="5" step="0.01" oninput="this.nextElementSibling.value = this.value" id="kA">
+            <output class="text">2</output>
+            <label for="kA" class="text">kA</label>
+            <input type="range" value="2" min="1" max="5" step="0.01" oninput="this.nextElementSibling.value = this.value" id="kP">
+            <output class="text">2</output>
+            <label for="kP" class="text">kP</label>
+        </div>
         
         <script src="scripts/point.js"></script>
         <script src="scripts/userInput.js"></script>
         <script src="scripts/spline.js"></script>
+        <script src="scripts/robot.js"></script>
         <script src="scripts/index.js"></script>
     </body>
 </html>

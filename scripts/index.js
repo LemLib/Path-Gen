@@ -108,7 +108,7 @@ canvasQuery.onmousedown = function(event) {
       // generate points on the spline
       const p1 = path.splines[path.splines.length - 1].p4;
       const p2V = new Vector(path.splines[path.splines.length - 1].p3, p1);
-      const p2 = p2V.interpolate(p2CalcVector.getMagnitude()*2);
+      const p2 = p2V.interpolate(p2V.getMagnitude()*2);
       // third point, just add 5 to the y coordinate of the mouse point
       const p3 = new Point(mousePosition.x, mousePosition.y + 12);
       // fourth point, same as the mouse point
@@ -150,8 +150,10 @@ canvasQuery.onmousemove = function(event) {
         if (controlPointSpline == 0) {
           path.splines[controlPointSpline].p2 = mousePosition;
         } else {
-          const v = new Vector(path.splines[controlPointSpline].p1, mousePosition);
-          path.splines[controlPointSpline-1].p3 = v.interpolate(-v.getMagnitude());
+          const p1 = path.splines[controlPointSpline].p1;
+          const v = new Vector(p1, mousePosition);
+          const p3 = v.interpolate(-v.getMagnitude());
+          path.splines[controlPointSpline-1].p3 = p3;
           path.splines[controlPointSpline].p2 = mousePosition;
         }
         break;
@@ -159,8 +161,10 @@ canvasQuery.onmousemove = function(event) {
         if (controlPointSpline == path.splines.length-1) {
           path.splines[controlPointSpline].p3 = mousePosition;
         } else {
-          const v = new Vector(path.splines[controlPointSpline].p4, mousePosition);
-          path.splines[controlPointSpline+1].p2 = v.interpolate(-v.getMagnitude());
+          const p4 = path.splines[controlPointSpline].p4;
+          const v = new Vector(p4, mousePosition);
+          const p2 = v.interpolate(-v.getMagnitude());
+          path.splines[controlPointSpline+1].p2 = p2;
           path.splines[controlPointSpline].p3 = mousePosition;
         }
         break;
@@ -200,7 +204,6 @@ function drawSpline() {
     const p3 = coordToPx(path.splines[i].p3);
     const p4 = coordToPx(path.splines[i].p4);
     ctx.fillStyle = hslToHex(140, 50, 50);
-    ctx.strokeStyle = '#000000';
     ctx.beginPath();
     ctx.arc(p1.x, p1.y, controlPointRadius*imgPixelsPerInch, 0, 2*Math.PI);
     ctx.arc(p2.x, p2.y, controlPointRadius*imgPixelsPerInch, 0, 2*Math.PI);
@@ -223,7 +226,7 @@ function drawSpline() {
   }
 
   // draw spline
-  for (let i = 0; i < path.points2.length; i++) { 
+  for (let i = 0; i < path.points2.length; i++) {
     const p1 = coordToPx(path.points2[i]);
     // draw the points
     const radiusSetting = 0.5;
@@ -246,3 +249,18 @@ function drawSpline() {
     }
   }
 };
+
+
+/**
+ * @brief log the path for use in the robot
+ */
+function logPath() {
+  // mega string
+  let megaString = '';
+
+  // log lookahead distance
+  megaString += document.getElementById('lookahead').value + '\n';
+  megaString += document.getElementById('accel').value + '\n';
+
+  console.log(megaString);
+}
