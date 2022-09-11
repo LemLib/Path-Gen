@@ -11,27 +11,45 @@
         </div>
 
         <div class="sliderContainer">
-            <input type="range" value="2" min="1" max="5" step="0.01" oninput="this.nextElementSibling.value = this.value" id="lookahead">
-            <output class="text">2</output>
+            <input type="range" value="10" min="1" max="50" step="0.01" oninput="this.nextElementSibling.value = this.value" id="lookahead">
+            <output class="text">10</output>
             <label for="lookahead" class="text">Lookahead</label>
-            <input type="range" value="2" min="1" max="60" step="0.01" oninput="this.nextElementSibling.value = this.value" id="accel">
-            <output class="text">2</output>
+
+            <input type="range" value="10" min="1" max="100" step="0.01" oninput="this.nextElementSibling.value = this.value" id="accel">
+            <output class="text">10</output>
             <label for="accel" class="text">Accel</label>
-            <input type="range" value="2" min="1" max="60" step="0.01" oninput="this.nextElementSibling.value = this.value" id="decel">
-            <output class="text">2</output>
+
+            <input type="range" value="10" min="1" max="100" step="0.01" oninput="this.nextElementSibling.value = this.value" id="decel">
+            <output class="text">10</output>
             <label for="decel" class="text">Decel</label>
-            <input type="range" value="2" min="1" max="5" step="0.01" oninput="this.nextElementSibling.value = this.value" id="multiplier">
-            <output class="text">2</output>
+
+            <input type="range" value="56.723" min="1" max="100" step="0.001" oninput="this.nextElementSibling.value = this.value" id="maxSpeed">
+            <output class="text">56.723</output>
+            <label for="maxSpeed" class="text">Max Speed</label>
+
+            <input type="range" value="50" min="1" max="100" step="0.01" oninput="this.nextElementSibling.value = this.value" id="multiplier">
+            <output class="text">50</output>
             <label for="multiplier" class="text">Speed Multiplier</label>
+
             <input type="range" value="2" min="1" max="5" step="0.01" oninput="this.nextElementSibling.value = this.value" id="kV">
             <output class="text">2</output>
             <label for="kV" class="text">kV</label>
+
             <input type="range" value="2" min="1" max="5" step="0.01" oninput="this.nextElementSibling.value = this.value" id="kA">
             <output class="text">2</output>
             <label for="kA" class="text">kA</label>
+
             <input type="range" value="2" min="1" max="5" step="0.01" oninput="this.nextElementSibling.value = this.value" id="kP">
             <output class="text">2</output>
             <label for="kP" class="text">kP</label>
+
+            <input type="range" value="100" min="10" max="1000" step="1" oninput="this.nextElementSibling.value = this.value" id="precision">
+            <output class="text">100</output>
+            <label for="precision" class="text">Precision</label>
+
+            <input type="range" value="2" min="1" max="10" step="0.01" oninput="this.nextElementSibling.value = this.value" id="inchesPerPoint">
+            <output class="text">2</output>
+            <label for="inchesPerPoint" class="text">Inches Per Point</label>
         </div>
         
         <script src="scripts/point.js"></script>

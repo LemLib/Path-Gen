@@ -184,10 +184,29 @@ document.addEventListener('contextmenu', function(e) {
   e.preventDefault();
 });
 
+
+/**
+ * @brief function that gets user input
+ */
+function getInput() {
+  lookahead = lookaheadSlider.value;
+  accel = accelSlider.value;
+  decel - decelSlider.value;
+  maxSpeed = maxSpeedSlider.value;
+  kV = kVSlider.value;
+  kA = kASlider.value;
+  kP = kPSlider.value;
+  precision = precisionSlider.value;
+  inchesPerPoint = inchesPerPointSlider.value;
+  curvatureMultiplier = (curveMultiplierSlider.value * precision)/100;
+};
+
 /**
  * @brief draw the spline
  */
 function drawSpline() {
+  // init
+  getInput();
   const finalSpacing = Math.round(path.length / inchesPerPoint);
   path.genPoints(precision, finalSpacing);
 
