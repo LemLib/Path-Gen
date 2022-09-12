@@ -278,13 +278,34 @@ setInterval(drawSpline, 1000/60);
 /**
  * @brief log the path for use in the robot
  */
-function logPath() {
+downloadBtn.onclick = function() {
   // mega string
-  let megaString = '';
+  let out = '';
 
-  // log lookahead distance
-  megaString += document.getElementById('lookahead').value + '\n';
-  megaString += document.getElementById('accel').value + '\n';
+  // log constants
+  out += lookahead + '\n';
+  out += accel + '\n';
+  out += kV + '\n';
+  out += kA + '\n';
+  out += kP + '\n';
 
-  console.log(megaString);
-}
+  // log path points
+  for (let i = 0; i < path.points2.length; i++) {
+    const x = path.points2[i].x;
+    const y = path.points2[i].y;
+    const velocity = path.points2[i].velocity;
+    out += x + ', ' + y + ', ' + velocity + '\n';
+  }
+
+  const blob = new Blob([out], {type: 'text/csv'});
+  if (window.navigator.msSaveOrOpenBlob) {
+    window.navigator.msSaveBlob(out, 'path.txt');
+  } else {
+    const elem = window.document.createElement('a');
+    elem.href = window.URL.createObjectURL(blob);
+    elem.download = 'path.txt';
+    document.body.appendChild(elem);
+    elem.click();
+    document.body.removeChild(elem);
+  }
+};

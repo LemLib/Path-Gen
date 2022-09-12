@@ -12,6 +12,10 @@ const kPSlider = document.getElementById('kP');
 const precisionSlider = document.getElementById('precision');
 const inchesPerPointSlider = document.getElementById('inchesPerPoint');
 
+// buttons
+const downloadBtn = document.getElementById('downloadBtn');
+const uploadBtn = document.getElementById('uploadBtn');
+
 // user settings
 let lookahead = 0.5;
 let accel = 0.5;

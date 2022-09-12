@@ -30,3 +30,9 @@ body {
     flex-basis: 40%;
     color: white;
 }
+
+.sliderContainer button {
+    list-style: none;
+    flex-basis: 100%;
+    color: black;
+}
