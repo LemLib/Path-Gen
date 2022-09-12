@@ -11,6 +11,7 @@ const kASlider = document.getElementById('kA');
 const kPSlider = document.getElementById('kP');
 const precisionSlider = document.getElementById('precision');
 const inchesPerPointSlider = document.getElementById('inchesPerPoint');
+const trackWidthSlider = document.getElementById('trackWidth');
 
 // buttons
 const downloadBtn = document.getElementById('downloadBtn');
@@ -27,5 +28,6 @@ let kA = 0.5; // acceleration gain
 let kP = 0.5; // position gain
 let precision = 100; // how many raw points to generate per spline
 let inchesPerPoint = 2; // this will be approximated
+let trackWidth = 18; // inches
 
 let controlPointRadius = 2; // radius of control points in inches

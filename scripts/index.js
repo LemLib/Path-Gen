@@ -288,6 +288,7 @@ downloadBtn.onclick = function() {
   out += kV + '\n';
   out += kA + '\n';
   out += kP + '\n';
+  out += trackWidth + '\n';
 
   // log path points
   for (let i = 0; i < path.points2.length; i++) {
