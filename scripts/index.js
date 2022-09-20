@@ -190,7 +190,7 @@ document.addEventListener('contextmenu', function(e) {
  */
 function getInput() {
   lookahead = lookaheadSlider.value;
-  decel - decelSlider.value; // inches/s/s
+  decel = decelSlider.value; // inches/s/s
   maxSpeed = maxSpeedSlider.value;
   precision = precisionSlider.value;
   curvatureMultiplier = (curveMultiplierSlider.value * precision)/100;

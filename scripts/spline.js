@@ -34,13 +34,17 @@ class Spline {
   /**
    * @brief generate points on the spline with a specific tolerance
    * @param {number} tolerance - the tolerance. How many points to generate
+   * @param {number} first - if the spline is the first on the path
    */
-  generatePoints(tolerance) {
+  generatePoints(tolerance, first) {
     const adjustedTolerance = tolerance - 1;
     this.points = [];
     const newTolerance = 1 / adjustedTolerance;
     for (let t = 0; t <= adjustedTolerance; t++) {
       this.points.push(this.getPosition(t/adjustedTolerance));
+    }
+    if (!first) {
+      this.points.shift();
     }
   };
 
@@ -49,6 +53,7 @@ class Spline {
    */
   genLength() {
     this.len = 0;
+
     for (let i = 0; i < this.points.len - 1; i++) {
       const v = new Vector(this.points[i], this.points[i+1]);
       this.len += v.getMagnitude();
@@ -210,7 +215,11 @@ class Path {
   genPoints(tolerance, spacing) {
     // generate points on all splines
     for (let i = 0; i < this.splines.length; i++) {
-      this.splines[i].generatePoints(tolerance);
+      if (i == 0) {
+        this.splines[i].generatePoints(tolerance, true);
+      } else {
+        this.splines[i].generatePoints(tolerance, false);
+      }
     }
 
     // combine all the splines into 1 array
