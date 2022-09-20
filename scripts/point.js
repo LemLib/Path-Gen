@@ -88,6 +88,24 @@ class Vector {
     const y = (d * Math.sin(angle)) + this.p1.y;
     return new Point(x, y);
   };
+
+  /**
+   * @brief get the x component of the vector
+   *
+   * @return {number} - x component
+   */
+  getX() {
+    return this.p2.x - this.p1.x;
+  }
+
+  /**
+   * @brief get the y component of the vector
+   *
+   * @return {number} - y component
+   */
+  getY() {
+    return this.p2.y - this.p1.y;
+  }
 };
 
 

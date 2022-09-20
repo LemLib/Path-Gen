@@ -140,6 +140,11 @@ canvasQuery.onmousemove = function(event) {
     switch (controlPointNumber) {
       case 1:
         if (controlPointSpline == 0) {
+          const v2 = new Vector(path.splines[0].p1, mousePos);
+          const x2 = v2.getX() + path.splines[controlPointSpline].p2.x;
+          const y2 = v2.getY() + path.splines[controlPointSpline].p2.y;
+          const tP2 = new Point(x2, y2);
+          path.splines[controlPointSpline].p2 = tP2;
           path.splines[controlPointSpline].p1 = mousePos;
         } else {
           path.splines[controlPointSpline].p1 = mousePos;
@@ -169,9 +174,18 @@ canvasQuery.onmousemove = function(event) {
         }
         break;
       case 4:
+        const v3 = new Vector(path.splines[controlPointSpline].p4, mousePos);
+        const x3 = v3.getX() + path.splines[controlPointSpline].p3.x;
+        const y3 = v3.getY() + path.splines[controlPointSpline].p3.y;
+        const tP3 = new Point(x3, y3);
+        path.splines[controlPointSpline].p3 = tP3;
         if (controlPointSpline == path.splines.length - 1) {
           path.splines[controlPointSpline].p4 = mousePos;
         } else {
+          const x2 = v3.getX() + path.splines[controlPointSpline+1].p2.x;
+          const y2 = v3.getY() + path.splines[controlPointSpline+1].p2.y;
+          const tP2 = new Point(x2, y2);
+          path.splines[controlPointSpline+1].p2 = tP2;
           path.splines[controlPointSpline].p4 = mousePos;
           path.splines[controlPointSpline+1].p1 = mousePos;
         }
