@@ -190,15 +190,30 @@ document.addEventListener('contextmenu', function(e) {
  */
 function getInput() {
   lookahead = lookaheadSlider.value;
-  accel = accelSlider.value;
-  decel - decelSlider.value;
+  decel - decelSlider.value; // inches/s/s
   maxSpeed = maxSpeedSlider.value;
-  kV = kVSlider.value;
-  kA = kASlider.value;
-  kP = kPSlider.value;
   precision = precisionSlider.value;
-  inchesPerPoint = inchesPerPointSlider.value;
   curvatureMultiplier = (curveMultiplierSlider.value * precision)/100;
+  inchesPerPoint = inchesPerPointSlider.value;
+  trackWidth = trackWidthSlider.value;
+  deactivateDist = deactivateDistSlider.value;
+
+  // update PID constants
+  lF = lFSlider.value;
+  lA = lASlider.value;
+  lP = lPSlider.value;
+  lI = lISlider.value;
+  lD = lDSlider.value;
+  lB = lBSlider.value;
+  lG = lGSlider.value;
+
+  rF = rFSlider.value;
+  rA = rASlider.value;
+  rP = rPSlider.value;
+  rI = rISlider.value;
+  rD = rDSlider.value;
+  rB = rBSlider.value;
+  rG = rGSlider.value;
 };
 
 /**
@@ -284,11 +299,24 @@ downloadBtn.onclick = function() {
 
   // log constants
   out += lookahead + '\n';
-  out += accel + '\n';
-  out += kV + '\n';
-  out += kA + '\n';
-  out += kP + '\n';
   out += trackWidth + '\n';
+  out += deactivateDist + '\n';
+
+  out += lF + '\n';
+  out += lA + '\n';
+  out += lP + '\n';
+  out += lI + '\n';
+  out += lD + '\n';
+  out += lB + '\n';
+  out += lG + '\n';
+
+  out += rF + '\n';
+  out += rA + '\n';
+  out += rP + '\n';
+  out += rI + '\n';
+  out += rD + '\n';
+  out += rB + '\n';
+  out += rG + '\n';
 
   // log path points
   for (let i = 0; i < path.points2.length; i++) {

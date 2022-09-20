@@ -14,49 +14,84 @@
             <input type="range" value="10" min="1" max="50" step="0.01" oninput="this.nextElementSibling.value = this.value" id="lookahead">
             <output class="text">10</output>
             <label for="lookahead" class="text">Lookahead</label>
-
-            <input type="range" value="10" min="1" max="100" step="0.01" oninput="this.nextElementSibling.value = this.value" id="accel">
-            <output class="text">10</output>
-            <label for="accel" class="text">Accel</label>
-
-            <input type="range" value="10" min="1" max="100" step="0.01" oninput="this.nextElementSibling.value = this.value" id="decel">
-            <output class="text">10</output>
+            <input type="range" value="20" min="0" max="100" step="0.01" oninput="this.nextElementSibling.value = this.value" id="decel">
+            <output class="text">20</output>
             <label for="decel" class="text">Decel</label>
-
-            <input type="range" value="56.723" min="1" max="100" step="0.001" oninput="this.nextElementSibling.value = this.value" id="maxSpeed">
-            <output class="text">56.723</output>
+            <input type="range" value="62.83" min="0" max="100" step="0.01" oninput="this.nextElementSibling.value = this.value" id="maxSpeed">
+            <output class="text">62.83</output>
             <label for="maxSpeed" class="text">Max Speed</label>
-
-            <input type="range" value="50" min="1" max="100" step="0.01" oninput="this.nextElementSibling.value = this.value" id="multiplier">
+            <input type="range" value="50" min="0.1" max="100" step="0.01" oninput="this.nextElementSibling.value = this.value" id="multiplier">
             <output class="text">50</output>
-            <label for="multiplier" class="text">Speed Multiplier</label>
-
-            <input type="range" value="2" min="1" max="5" step="0.01" oninput="this.nextElementSibling.value = this.value" id="kV">
-            <output class="text">2</output>
-            <label for="kV" class="text">kV</label>
-
-            <input type="range" value="2" min="1" max="5" step="0.01" oninput="this.nextElementSibling.value = this.value" id="kA">
-            <output class="text">2</output>
-            <label for="kA" class="text">kA</label>
-
-            <input type="range" value="2" min="1" max="5" step="0.01" oninput="this.nextElementSibling.value = this.value" id="kP">
-            <output class="text">2</output>
-            <label for="kP" class="text">kP</label>
-
-            <input type="range" value="100" min="10" max="1000" step="1" oninput="this.nextElementSibling.value = this.value" id="precision">
+            <label for="multiplier" class="text">Multiplier</label>
+            <input type="range" value="100" min="20" max="1000" step="1" oninput="this.nextElementSibling.value = this.value" id="precision">
             <output class="text">100</output>
             <label for="precision" class="text">Precision</label>
-
-            <input type="range" value="2" min="1" max="10" step="0.01" oninput="this.nextElementSibling.value = this.value" id="inchesPerPoint">
+            <input type="range" value="2" min="0.5" max="10" step="0.01" oninput="this.nextElementSibling.value = this.value" id="inchesPerPoint">
             <output class="text">2</output>
-            <label for="inchesPerPoint" class="text">Inches per Point</label>
-
-            <input type="range" value="18" min="1" max="24" step="0.01" oninput="this.nextElementSibling.value = this.value" id="trackWidth">
+            <label for="inchesPerPoint" class="text">Inches Per Point</label>
+            <input type="range" value="18" min="1" max="30" step="0.01" oninput="this.nextElementSibling.value = this.value" id="trackWidth">
             <output class="text">18</output>
             <label for="trackWidth" class="text">Track Width</label>
+            <input type="range" value="5" min="0.1" max="10" step="0.01" oninput="this.nextElementSibling.value = this.value" id="deactivate">
+            <output class="text">5</output>
+            <label for="deactivate" class="text">Deactivate Dist</label>
 
             <button type="button" id="downloadBtn">Download</button>
             <button type="button" id="uploadBtn">Upload</button>
+        </div>
+
+        <div class="sliderContainer">
+            <input type="range" value="1" min="0" max="5" step="0.01" oninput="this.nextElementSibling.value = this.value" id="lF">
+            <output class="text">1</output>
+            <label for="lF" class="text">Left F</label>
+            <input type="range" value="1" min="0" max="5" step="0.01" oninput="this.nextElementSibling.value = this.value" id="lA">
+            <output class="text">1</output>
+            <label for="lA" class="text">Left A</label>
+            <input type="range" value="1" min="0" max="5" step="0.01" oninput="this.nextElementSibling.value = this.value" id="lJ">
+            <output class="text">1</output>
+            <label for="lJ" class="text">Left J</label>
+            <input type="range" value="1" min="0" max="5" step="0.01" oninput="this.nextElementSibling.value = this.value" id="lP">
+            <output class="text">1</output>
+            <label for="lP" class="text">Left P</label>
+            <input type="range" value="1" min="0" max="5" step="0.01" oninput="this.nextElementSibling.value = this.value" id="lI">
+            <output class="text">1</output>
+            <label for="lI" class="text">Left I</label>
+            <input type="range" value="1" min="0" max="5" step="0.01" oninput="this.nextElementSibling.value = this.value" id="lD">
+            <output class="text">1</output>
+            <label for="lD" class="text">Left D</label>
+            <input type="range" value="0" min="0" max="1" step="0.01" oninput="this.nextElementSibling.value = this.value" id="lB">
+            <output class="text">1</output>
+            <label for="lB" class="text">Left B</label>
+            <input type="range" value="0" min="0" max="1" step="0.01" oninput="this.nextElementSibling.value = this.value" id="lG">
+            <output class="text">1</output>
+            <label for="lG" class="text">Left G</label>
+        </div>
+
+        <div class="sliderContainer">
+            <input type="range" value="1" min="0" max="5" step="0.01" oninput="this.nextElementSibling.value = this.value" id="rF">
+            <output class="text">1</output>
+            <label for="rF" class="text">Right F</label>
+            <input type="range" value="1" min="0" max="5" step="0.01" oninput="this.nextElementSibling.value = this.value" id="rA">
+            <output class="text">1</output>
+            <label for="rA" class="text">Right A</label>
+            <input type="range" value="1" min="0" max="5" step="0.01" oninput="this.nextElementSibling.value = this.value" id="rJ">
+            <output class="text">1</output>
+            <label for="rJ" class="text">Right J</label>
+            <input type="range" value="1" min="0" max="5" step="0.01" oninput="this.nextElementSibling.value = this.value" id="rP">
+            <output class="text">1</output>
+            <label for="rP" class="text">Right P</label>
+            <input type="range" value="1" min="0" max="5" step="0.01" oninput="this.nextElementSibling.value = this.value" id="rI">
+            <output class="text">1</output>
+            <label for="rI" class="text">Right I</label>
+            <input type="range" value="1" min="0" max="5" step="0.01" oninput="this.nextElementSibling.value = this.value" id="rD">
+            <output class="text">1</output>
+            <label for="rD" class="text">Right D</label>
+            <input type="range" value="0" min="0" max="1" step="0.01" oninput="this.nextElementSibling.value = this.value" id="rB">
+            <output class="text">1</output>
+            <label for="rB" class="text">Right B</label>
+            <input type="range" value="0" min="0" max="1" step="0.01" oninput="this.nextElementSibling.value = this.value" id="rG">
+            <output class="text">1</output>
+            <label for="rG" class="text">Right G</label>
         </div>
         
         <script src="scripts/point.js"></script>
