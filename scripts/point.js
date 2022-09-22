@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
 
+
 /**
  * @brief initialize the canvas
  */
@@ -58,6 +59,7 @@ class Vector {
     this.p2 = p2;
   };
 
+
   /**
    * @brief get the length of the vector
    * @return {number} - the length of the vector
@@ -67,6 +69,7 @@ class Vector {
                      Math.pow(this.p2.y - this.p1.y, 2));
   };
 
+
   /**
    * @brief get the angle of the vector
    * @return {number} - the angle of the vector in radians
@@ -74,6 +77,7 @@ class Vector {
   getAngle() {
     return Math.atan2(this.p2.y - this.p1.y, this.p2.x - this.p1.x);
   };
+
 
   /**
    * @brief interpolate between two points
@@ -89,6 +93,7 @@ class Vector {
     return new Point(x, y);
   };
 
+
   /**
    * @brief get the x component of the vector
    *
@@ -97,6 +102,7 @@ class Vector {
   getX() {
     return this.p2.x - this.p1.x;
   }
+
 
   /**
    * @brief get the y component of the vector

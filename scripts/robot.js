@@ -18,6 +18,7 @@ class Robot {
     this.trackWidth = trackWidth;
   };
 
+
   /**
    * @brief returns position of the robot
    * @return {Point} - robot position
@@ -27,6 +28,7 @@ class Robot {
     return p;
   };
 
+
   /**
    * @brief returns the heading of the robot
    * @param {boolean} isRadians - whether to return in radians or not
@@ -35,6 +37,7 @@ class Robot {
   getHeading(isRadians) {
     return this.heading;
   };
+
 
   /**
    * @brief move the robot "wheels"

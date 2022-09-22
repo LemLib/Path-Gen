@@ -19,6 +19,9 @@ window.onload = function() {
 
   // update path length
   path.genPoints(precision, 10);
+
+  // draw path every x seconds
+  setInterval(drawSpline, 1000/60);
 };
 
 
@@ -47,6 +50,7 @@ let controlPointHold = false;
 let controlPointSpline = 0;
 let controlPointNumber = 0;
 
+
 /**
  * @brief function that returns the position of the mouse
  * @param {Event} canvas - the canvas
@@ -60,6 +64,11 @@ function getCursorPosition(canvas, event) {
   return mousePoint;
 };
 
+
+/**
+ * @brief function that runs when the mouse is clicked
+ * @param {Event} event - the event that is triggered (mouse click)
+ */
 canvasQuery.onmousedown = function(event) {
   if (event.button == 0) {
     for (let i = 0; i < path.splines.length; i++) {
@@ -130,10 +139,20 @@ canvasQuery.onmousedown = function(event) {
   }
 };
 
+
+/**
+ * @brief function that runs when the mouse is released
+ * @param {Event} event - the event that is triggered (mouse release)
+ */
 canvasQuery.onmouseup = function(event) {
   controlPointHold = false;
 };
 
+
+/**
+ * @brief function that runs when the mouse is moved
+ * @param {Event} event - the event that is triggered (mouse move)
+ */
 canvasQuery.onmousemove = function(event) {
   mousePos = pxToCoord(getCursorPosition(canvasQuery, event));
   if (controlPointHold) {
@@ -194,9 +213,14 @@ canvasQuery.onmousemove = function(event) {
   }
 };
 
-document.addEventListener('contextmenu', function(e) {
-  e.preventDefault();
-});
+
+/**
+ * @brief function that runs when the the mouse was right clicked
+ * @param {Event} event - the event that is triggered (mouse right click)
+ */
+document.oncontextmenu = function(event) {
+  event.preventDefault();
+};
 
 
 /**
@@ -229,6 +253,7 @@ function getInput() {
   rB = rBSlider.value;
   rG = rGSlider.value;
 };
+
 
 /**
  * @brief draw the spline
@@ -302,8 +327,6 @@ function drawSpline() {
 };
 
 
-// draw path every x seconds
-setInterval(drawSpline, 1000/60);
 /**
  * @brief log the path for use in the robot
  */

@@ -18,6 +18,7 @@ class Spline {
     this.p4 = p4;
   };
 
+
   /**
    * @brief get the position of the spline at a certain time
    * @param {number} t - the time
@@ -30,6 +31,7 @@ class Spline {
               3*t**2*(1-t)*this.p3.y + t**3*this.p4.y;
     return new Point(x, y);
   };
+
 
   /**
    * @brief generate points on the spline with a specific tolerance
@@ -47,6 +49,7 @@ class Spline {
       this.points.shift();
     }
   };
+
 
   /**
    * @brief get the length of the spline
@@ -114,6 +117,7 @@ class Path {
     this.splines = [];
   };
 
+
   /**
    * @brief add a spline to the path
    * @param {Spline} spline - the spline to add
@@ -121,6 +125,7 @@ class Path {
   addSpline(spline) {
     this.splines.push(spline);
   };
+
 
   /**
    * @brief calculate the distance of the path
@@ -138,6 +143,7 @@ class Path {
     // save the length of the spline
     this.length = this.points[this.points.length - 1].distance;
   };
+
 
   /**
    * @brief generate velocities for each point
@@ -157,6 +163,7 @@ class Path {
       }
     }
   };
+
 
   /**
    * @brief generate equally spaced points
@@ -204,6 +211,7 @@ class Path {
       }
     }
   };
+
 
   /**
    * @brief generate points on all splines with a specific tolerance

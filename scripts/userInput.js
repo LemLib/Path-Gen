@@ -1,5 +1,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable prefer-const */
+
+
 // sliders
 const lookaheadSlider = document.getElementById('lookahead');
 const decelSlider = document.getElementById('decel');
