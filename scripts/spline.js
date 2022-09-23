@@ -162,6 +162,17 @@ class Path {
         this.points[i+1].velocity = vel;
       }
     }
+
+    // apply deceleration
+    this.points[this.points.length - 1].velocity = 0;
+    for (let i = this.points.length-1; i > 0; i--) { // loop from end to start
+      const p0 = this.points[i];
+      const p1 = this.points[i-1];
+
+      const v = new Vector(p0, p1);
+      const vel = Math.sqrt(p0.velocity**2 + 2*decel*v.getMagnitude());
+      this.points[i-1].velocity = Math.min(vel, p1.velocity);
+    }
   };
 
 

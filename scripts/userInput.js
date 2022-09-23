@@ -36,7 +36,7 @@ const uploadBtn = document.getElementById('uploadBtn');
 
 // user settings
 let lookahead = 0.5; // lookahead
-let decel = 0.5; // deceleration
+let decel = 0.5; // deceleration in in/s^2
 let maxSpeed = 62.8318530718; // inches per second
 let curvatureMultiplier = 50; // robot speed over sharp curves, range from 1 - 5
 let precision = 100; // how many raw points to generate per spline
