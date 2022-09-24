@@ -341,6 +341,7 @@ downloadBtn.onclick = function() {
 
   out += lF + '\n';
   out += lA + '\n';
+  out += lJ + '\n';
   out += lP + '\n';
   out += lI + '\n';
   out += lD + '\n';
@@ -349,6 +350,7 @@ downloadBtn.onclick = function() {
 
   out += rF + '\n';
   out += rA + '\n';
+  out += rJ + '\n';
   out += rP + '\n';
   out += rI + '\n';
   out += rD + '\n';
