@@ -30,9 +30,40 @@ const rDSlider = document.getElementById('rD');
 const rBSlider = document.getElementById('rB');
 const rGSlider = document.getElementById('rG');
 
+// slider values
+const lookaheadVal = document.getElementById('lookaheadVal');
+const decelVal = document.getElementById('decelVal');
+const maxSpeedVal = document.getElementById('maxSpeedVal');
+const curveMultiplierVal = document.getElementById('multiplierVal');
+const precisionVal = document.getElementById('precisionVal');
+const inchesPerPointVal = document.getElementById('inchesPerPointVal');
+const trackWidthVal = document.getElementById('trackWidthVal');
+const deactivateDistVal = document.getElementById('deactivateVal');
+
+const lFVal = document.getElementById('lFVal');
+const lAVal = document.getElementById('lAVal');
+const lJVal = document.getElementById('lJVal');
+const lPVal = document.getElementById('lPVal');
+const lIVal = document.getElementById('lIVal');
+const lDVal = document.getElementById('lDVal');
+const lBVal = document.getElementById('lBVal');
+const lGVal = document.getElementById('lGVal');
+
+const rFVal = document.getElementById('rFVal');
+const rAVal = document.getElementById('rAVal');
+const rJVal = document.getElementById('rJVal');
+const rPVal = document.getElementById('rPVal');
+const rIVal = document.getElementById('rIVal');
+const rDVal = document.getElementById('rDVal');
+const rBVal = document.getElementById('rBVal');
+const rGVal = document.getElementById('rGVal');
+
+
 // buttons
-const downloadBtn = document.getElementById('downloadBtn');
-const uploadBtn = document.getElementById('uploadBtn');
+const downloadRobotBtn = document.getElementById('downloadRobotBtn');
+const downloadPathBtn = document.getElementById('downloadPathBtn');
+const uploadDebugBtn = document.getElementById('uploadDebugBtn');
+const uploadPathBtn = document.getElementById('uploadPathBtn');
 
 // user settings
 let lookahead = 0.5; // lookahead

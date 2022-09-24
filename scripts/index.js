@@ -1,4 +1,4 @@
-const path = new Path(); // robot path
+let path = new Path(); // robot path
 
 
 /**
@@ -239,6 +239,7 @@ function getInput() {
   // update PID constants
   lF = lFSlider.value;
   lA = lASlider.value;
+  lJ = lJSlider.value;
   lP = lPSlider.value;
   lI = lISlider.value;
   lD = lDSlider.value;
@@ -247,6 +248,7 @@ function getInput() {
 
   rF = rFSlider.value;
   rA = rASlider.value;
+  rJ = rJSlider.value;
   rP = rPSlider.value;
   rI = rISlider.value;
   rD = rDSlider.value;
@@ -330,7 +332,7 @@ function drawSpline() {
 /**
  * @brief log the path for use in the robot
  */
-downloadBtn.onclick = function() {
+downloadRobotBtn.onclick = function() {
   // mega string
   let out = '';
 
@@ -367,6 +369,63 @@ downloadBtn.onclick = function() {
 
   const blob = new Blob([out], {type: 'text/csv'});
   if (window.navigator.msSaveOrOpenBlob) {
+    window.navigator.msSaveBlob(out, 'robot.txt');
+  } else {
+    const elem = window.document.createElement('a');
+    elem.href = window.URL.createObjectURL(blob);
+    elem.download = 'robot.txt';
+    document.body.appendChild(elem);
+    elem.click();
+    document.body.removeChild(elem);
+  }
+};
+
+
+/**
+ * @brief log the path for use in the simulator
+ */
+downloadPathBtn.onclick = function() {
+  // mega string
+  let out = '';
+
+  // log slider values
+  out += lookahead + '\n';
+  out += decel + '\n';
+  out += maxSpeed + '\n';
+  out += curveMultiplierSlider.value + '\n';
+  out += precision + '\n';
+  out += inchesPerPoint + '\n';
+  out += trackWidth + '\n';
+  out += deactivateDist + '\n';
+  out += lF + '\n';
+  out += lA + '\n';
+  out += lJ + '\n';
+  out += lP + '\n';
+  out += lI + '\n';
+  out += lD + '\n';
+  out += lB + '\n';
+  out += lG + '\n';
+  out += rF + '\n';
+  out += rA + '\n';
+  out += rJ + '\n';
+  out += rP + '\n';
+  out += rI + '\n';
+  out += rD + '\n';
+  out += rB + '\n';
+  out += rG + '\n';
+
+  // log splines
+  for (let i = 0; i < path.splines.length; i++) {
+    const p1 = path.splines[i].p1;
+    const p2 = path.splines[i].p2;
+    const p3 = path.splines[i].p3;
+    const p4 = path.splines[i].p4;
+    out += p1.x + ', ' + p1.y + ', ' + p2.x + ', ' + p2.y + ', ' + p3.x + ', ' + p3.y + ', ' + p4.x + ', ' + p4.y + '\n';
+  }
+
+  // download the file
+  const blob = new Blob([out], {type: 'text/csv'});
+  if (window.navigator.msSaveOrOpenBlob) {
     window.navigator.msSaveBlob(out, 'path.txt');
   } else {
     const elem = window.document.createElement('a');
@@ -377,3 +436,119 @@ downloadBtn.onclick = function() {
     document.body.removeChild(elem);
   }
 };
+
+
+/**
+ * @brief upload path data from file
+ */
+uploadPathBtn.onchange = function() {
+  const file = uploadPathBtn.files[uploadPathBtn.files.length];
+  const reader = new FileReader();
+  let data = '';
+
+  // event fired when file reading finished
+	reader.onload=function() {
+    data = reader.result;
+
+    // split the data into lines
+    const lines = data.split('\n');
+
+    // init path
+    path = new Path();
+    
+    // get the slider values
+    lookahead = parseFloat(lines[0]);
+    decel = parseFloat(lines[1]);
+    maxSpeed = parseFloat(lines[2]);
+    curvatureMultiplier = parseFloat(lines[3]);
+    precision = parseFloat(lines[4]);
+    inchesPerPoint = parseFloat(lines[5]);
+    trackWidth = parseFloat(lines[6]);
+    deactivateDist = parseFloat(lines[7]);
+    lF = parseFloat(lines[8]);
+    lA = parseFloat(lines[9]);
+    lJ = parseFloat(lines[10]);
+    lP = parseFloat(lines[11]);
+    lI = parseFloat(lines[12]);
+    lD = parseFloat(lines[13]);
+    lB = parseFloat(lines[14]);
+    lG = parseFloat(lines[15]);
+    rF = parseFloat(lines[16]);
+    rA = parseFloat(lines[17]);
+    rJ = parseFloat(lines[18]);
+    rP = parseFloat(lines[19]);
+    rI = parseFloat(lines[20]);
+    rD = parseFloat(lines[21]);
+    rB = parseFloat(lines[22]);
+    rG = parseFloat(lines[23]);
+
+    let i = 24;
+
+    // read splines
+    path.splines = [];
+    while (i < lines.length-1) {
+      // read spline
+      const line = lines[i].split(', ');
+      const p1 = new Point(parseFloat(line[0]), parseFloat(line[1]));
+      const p2 = new Point(parseFloat(line[2]), parseFloat(line[3]));
+      const p3 = new Point(parseFloat(line[4]), parseFloat(line[5]));
+      const p4 = new Point(parseFloat(line[6]), parseFloat(line[7]));
+      const spline = new Spline(p1, p2, p3, p4);
+      path.addSpline(spline)
+      i++;
+    }
+
+    // update the sliders
+    lookaheadSlider.value = lookahead;
+    decelSlider.value = decel;
+    maxSpeedSlider.value = maxSpeed;
+    curveMultiplierSlider.value = curvatureMultiplier;
+    precisionSlider.value = precision;
+    inchesPerPointSlider.value = inchesPerPoint;
+    trackWidthSlider.value = trackWidth;
+    deactivateDistSlider.value = deactivateDist;
+    lFSlider.value = lF;
+    lASlider.value = lA;
+    lJSlider.value = lJ;
+    lPSlider.value = lP;
+    lISlider.value = lI;
+    lDSlider.value = lD;
+    lBSlider.value = lB;
+    lGSlider.value = lG;
+    rFSlider.value = rF;
+    rASlider.value = rA;
+    rJSlider.value = rJ;
+    rPSlider.value = rP;
+    rISlider.value = rI;
+    rDSlider.value = rD;
+    rBSlider.value = rB;
+    rGSlider.value = rG;
+
+    // update the text
+    lookaheadVal.innerHTML = lookahead;
+    decelVal.innerHTML = decel;
+    maxSpeedVal.innerHTML = maxSpeed;
+    curveMultiplierVal.innerHTML = curvatureMultiplier;
+    precisionVal.innerHTML = precision;
+    inchesPerPointVal.innerHTML = inchesPerPoint;
+    trackWidthVal.innerHTML = trackWidth;
+    deactivateDistVal.innerHTML = deactivateDist;
+    lFVal.innerHTML = lF;
+    lAVal.innerHTML = lA;
+    lJVal.innerHTML = lJ;
+    lPVal.innerHTML = lP;
+    lIVal.innerHTML = lI;
+    lDVal.innerHTML = lD;
+    lBVal.innerHTML = lB;
+    lGVal.innerHTML = lG;
+    rFVal.innerHTML = rF;
+    rAVal.innerHTML = rA;
+    rJVal.innerHTML = rJ;
+    rPVal.innerHTML = rP;
+    rIVal.innerHTML = rI;
+    rDVal.innerHTML = rD;
+    rBVal.innerHTML = rB;
+    rGVal.innerHTML = rG;
+  }
+  reader.readAsText(this.files[0]);
+}
