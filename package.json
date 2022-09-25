@@ -20,7 +20,7 @@
   },
   "homepage": "https://github.com/SizzinSeal/Path-Gen#readme",
   "devDependencies": {
-    "eslint": "^8.23.0",
+    "eslint": "^8.24.0",
     "eslint-config-google": "^0.14.0"
   }
 }

@@ -64,6 +64,7 @@ const downloadRobotBtn = document.getElementById('downloadRobotBtn');
 const downloadPathBtn = document.getElementById('downloadPathBtn');
 const uploadDebugBtn = document.getElementById('uploadDebugBtn');
 const uploadPathBtn = document.getElementById('uploadPathBtn');
+const modeBtn = document.getElementById('modeBtn');
 
 // user settings
 let lookahead = 0.5; // lookahead

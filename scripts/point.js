@@ -1,6 +1,3 @@
-/* eslint-disable no-unused-vars */
-
-
 /**
  * @brief initialize the canvas
  */

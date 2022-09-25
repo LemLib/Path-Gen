@@ -10,6 +10,8 @@
         "ecmaVersion": "latest"
     },
     "rules": {
-        "linebreak-style": ["error", "windows"]
+        "linebreak-style": ["error", "windows"],
+        "no-unused-vars": "off",
+        "prefer-const": "off"
     }
 }
