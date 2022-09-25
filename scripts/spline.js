@@ -253,3 +253,45 @@ class Path {
     this.genSpacedPoints(spacing);
   };
 };
+
+
+/**
+ * @brief debugDataPoint class
+ */
+class debugDataPoint {
+  /**
+   * @brief constructor for debugDataPoint
+   * @param {number} timestamp - the timestamp of the data point
+   * @param {number} rbtX - the x position of the robot
+   * @param {number} rbtY - the y position of the robot
+   * @param {number} rbtH - the heading of the robot
+   * @param {number} closestX - the x position of the closest point
+   * @param {number} closestY - the y position of the closest point
+   * @param {number} lookaheadX - the x position of the lookahead point
+   * @param {number} lookaheadY - the y position of the lookahead point
+   * @param {number} curvature - the curvature of the robot
+   * @param {number} targetVel - the target velocity of the robot
+   * @param {number} leftTargetVel - the target velocity of the left wheel
+   * @param {number} rightTargetVel - the target velocity of the right wheel
+   * @param {number} leftVel - the velocity of the left wheel
+   * @param {number} rightVel - the velocity of the right wheel
+   */
+  constructor(timestamp, rbtX, rbtY, rbtH, closestX, closestY, lookaheadX,
+      lookaheadY, curvature, targetVel, leftTargetVel, rightTargetVel,
+      leftVel, rightVel) {
+    this.timestamp = timestamp();
+    this.rbtX = rbtX;
+    this.rbtY = rbtY;
+    this.rbtH = rbtH;
+    this.closestX = closestX;
+    this.closestY = closestY;
+    this.lookaheadX = lookaheadX;
+    this.lookaheadY = lookaheadY;
+    this.curvature = curvature;
+    this.targetVel = targetVel;
+    this.leftTargetVel = leftTargetVel;
+    this.rightTargetVel = rightTargetVel;
+    this.leftVel = leftVel;
+    this.rightVel = rightVel;
+  };
+};

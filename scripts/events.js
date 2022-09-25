@@ -440,7 +440,49 @@ uploadDebugBtn.onchange = function() {
     data = reader.result;
     // split the data into lines
     const lines = data.split('\n');
-    // get path points
+
+    // loop to get path points
+    let i = 0;
+    while (lines[i] != 'debug') {
+      i++;
+      const line = lines[i].split(', ');
+      const x = parseFloat(line[0]);
+      const y = parseFloat(line[1]);
+      const velocity = parseFloat(line[2]);
+      const p = new Point(x, y);
+      p.velocity = velocity;
+      debugPath.push(p);
+    }
+
+
+    /*
+     * Debug Data Format
+     * timestamp, rbtX, rbtY, rbtH, closestX, closestY, lookaheadX, lookaheadY,
+     *     curvature, targetVel, leftTargetVel, rightTargetVel,
+     *     leftVel, rightVel
+     */
+    // loop to get debug data
+    for (i++; i < lines.length; i++) {
+      const line = lines[i].split(', ');
+      const timestamp = parseFloat(line[0]);
+      const rbtX = parseFloat(line[1]);
+      const rbtY = parseFloat(line[2]);
+      const rbtH = parseFloat(line[3]);
+      const closestX = parseFloat(line[4]);
+      const closestY = parseFloat(line[5]);
+      const lookaheadX = parseFloat(line[6]);
+      const lookaheadY = parseFloat(line[7]);
+      const curvature = parseFloat(line[8]);
+      const targetVel = parseFloat(line[9]);
+      const leftTargetVel = parseFloat(line[10]);
+      const rightTargetVel = parseFloat(line[11]);
+      const leftVel = parseFloat(line[12]);
+      const rightVel = parseFloat(line[13]);
+      const debugData = new DebugData(timestamp, rbtX, rbtY, rbtH, closestX,
+          closestY, lookaheadX, lookaheadY, curvature, targetVel,
+          leftTargetVel, rightTargetVel, leftVel, rightVel);
+      debugDataList.push(debugData);
+    }
   };
 };
 
@@ -449,5 +491,16 @@ uploadDebugBtn.onchange = function() {
  * @brief mode button clicked
  */
 modeBtn.onclick = function() {
-
+  const cols = document.getElementsByClassName('sliderContainer');
+  if (cols[0].style.display === 'none') {
+    mode = 0;
+    for (i = 0; i < cols.length; i++) {
+      cols[i].style.display = 'flex';
+    }
+  } else {
+    mode = 1;
+    for (i = 0; i < cols.length; i++) {
+      cols[i].style.display = 'none';
+    }
+  }
 };

@@ -2,7 +2,7 @@ const path = new Path(); // robot path
 let debugPath = [];
 
 
-// program mode.
+// program mode
 // 0 = create
 // 1 = debug
 let mode = 0;
