@@ -140,3 +140,23 @@ function coordToPx(point) {
   newPoint.y = imgActualWidth - newPoint.y - imgHalfActualWidth;
   return newPoint;
 };
+
+
+/**
+ * @brief convert radians to degrees
+ * @param {number} radians - the angle in radians
+ * @return {number} - the angle in degrees
+ */
+function radToDeg(radians) {
+  return radians * (180/Math.pi);
+}
+
+
+/**
+ * @brief convert degrees to radians
+ * @param {number} degrees - the angle in degrees
+ * @return {number} - the angle in radians
+ */
+function degToRad(degrees) {
+  return degrees * (Math.PI/180);
+}

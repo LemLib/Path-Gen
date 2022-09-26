@@ -431,7 +431,7 @@ uploadPathBtn.onchange = function() {
  * @brief upload the robot debug data
  */
 uploadDebugBtn.onchange = function() {
-  const file = uploadPathBtn.files[uploadPathBtn.files.length];
+  const file = uploadDebugBtn.files[uploadDebugBtn.files.length];
   const reader = new FileReader();
   let data = '';
 
@@ -443,8 +443,7 @@ uploadDebugBtn.onchange = function() {
 
     // loop to get path points
     let i = 0;
-    while (lines[i] != 'debug') {
-      i++;
+    while (lines[i].substr(0, 5) != 'debug') {
       const line = lines[i].split(', ');
       const x = parseFloat(line[0]);
       const y = parseFloat(line[1]);
@@ -452,15 +451,14 @@ uploadDebugBtn.onchange = function() {
       const p = new Point(x, y);
       p.velocity = velocity;
       debugPath.push(p);
+      i++;
     }
 
-
-    /*
-     * Debug Data Format
-     * timestamp, rbtX, rbtY, rbtH, closestX, closestY, lookaheadX, lookaheadY,
-     *     curvature, targetVel, leftTargetVel, rightTargetVel,
-     *     leftVel, rightVel
-     */
+    // Debug Data Format
+    // timestamp, rbtX, rbtY, rbtH, closestX, closestY, lookaheadX, lookaheadY,
+    //     curvature, targetVel, leftTargetVel, rightTargetVel,
+    //     leftVel, rightVel
+    //
     // loop to get debug data
     for (i++; i < lines.length; i++) {
       const line = lines[i].split(', ');
@@ -478,12 +476,14 @@ uploadDebugBtn.onchange = function() {
       const rightTargetVel = parseFloat(line[11]);
       const leftVel = parseFloat(line[12]);
       const rightVel = parseFloat(line[13]);
-      const debugData = new DebugData(timestamp, rbtX, rbtY, rbtH, closestX,
-          closestY, lookaheadX, lookaheadY, curvature, targetVel,
+      const debugData = new DebugDataPoint(timestamp, rbtX, rbtY, rbtH,
+          closestX, closestY, lookaheadX, lookaheadY, curvature, targetVel,
           leftTargetVel, rightTargetVel, leftVel, rightVel);
       debugDataList.push(debugData);
+      debugSet = true;
     }
   };
+  reader.readAsText(this.files[this.files.length-1]);
 };
 
 
@@ -492,15 +492,26 @@ uploadDebugBtn.onchange = function() {
  */
 modeBtn.onclick = function() {
   const cols = document.getElementsByClassName('sliderContainer');
+  const cols2 = document.getElementsByClassName('debugContainer');
   if (cols[0].style.display === 'none') {
     mode = 0;
+    // show create mode sliders
     for (i = 0; i < cols.length; i++) {
       cols[i].style.display = 'flex';
     }
+    // hide debug mode sliders
+    for (i = 0; i < cols2.length; i++) {
+      cols2[i].style.display = 'none';
+    }
   } else {
     mode = 1;
+    // hide create mode sliders
     for (i = 0; i < cols.length; i++) {
       cols[i].style.display = 'none';
+    }
+    // show debug mode sliders
+    for (i = 0; i < cols2.length; i++) {
+      cols2[i].style.display = 'flex';
     }
   }
 };

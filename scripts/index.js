@@ -1,5 +1,8 @@
-const path = new Path(); // robot path
+let path = new Path(); // robot path
 let debugPath = [];
+let debugDataList = [];
+let debugDataTime = 0;
+let debugSet = false;
 
 
 // program mode
@@ -30,7 +33,7 @@ function hslToHex(h, s, l) {
     return Math.round(255 * color).toString(16).padStart(2, '0');
   };
   return `#${f(0)}${f(8)}${f(4)}`;
-}
+};
 
 
 /**
@@ -68,6 +71,136 @@ function getInput() {
 
 
 /**
+ * @brief function to create a field
+ */
+function renderCreate() {
+  // init
+  getInput();
+  const finalSpacing = Math.round(path.length / inchesPerPoint);
+  path.genPoints(precision, finalSpacing);
+
+  // draw control points
+  for (let i = 0; i < path.splines.length; i++) {
+    const p1 = coordToPx(path.splines[i].p1);
+    const p2 = coordToPx(path.splines[i].p2);
+    const p3 = coordToPx(path.splines[i].p3);
+    const p4 = coordToPx(path.splines[i].p4);
+    ctx.fillStyle = hslToHex(140, 50, 50);
+    ctx.strokeStyle = hslToHex(0, 0, 0);
+    // draw the lines between the control points
+    ctx.beginPath();
+    ctx.moveTo(p1.x, p1.y);
+    ctx.lineTo(p2.x, p2.y);
+    ctx.stroke();
+    ctx.closePath();
+    ctx.beginPath();
+    ctx.moveTo(p3.x, p3.y);
+    ctx.lineTo(p4.x, p4.y);
+    ctx.stroke();
+    ctx.closePath();
+    // draw the control points
+    ctx.beginPath();
+    ctx.arc(p1.x, p1.y, controlPointRadius*imgPixelsPerInch, 0, 2*Math.PI);
+    ctx.arc(p2.x, p2.y, controlPointRadius*imgPixelsPerInch, 0, 2*Math.PI);
+    ctx.fill();
+    ctx.closePath();
+    ctx.beginPath();
+    ctx.arc(p3.x, p3.y, controlPointRadius*imgPixelsPerInch, 0, 2*Math.PI);
+    ctx.arc(p4.x, p4.y, controlPointRadius*imgPixelsPerInch, 0, 2*Math.PI);
+    ctx.fill();
+    ctx.closePath();
+  }
+
+  // draw spline
+  for (let i = 0; i < path.points2.length; i++) {
+    const p1 = coordToPx(path.points2[i]);
+    // draw the points
+    const radiusSetting = 0.5;
+    const radius = radiusSetting * imgPixelsPerInch;
+    ctx.fillStyle = hslToHex((path.points2[i].velocity/maxSpeed)*180,
+        100, 50);
+    ctx.strokeStyle = ctx.fillStyle;
+    ctx.beginPath();
+    ctx.arc(p1.x, p1.y, radius, 0, 2 * Math.PI);
+    ctx.stroke();
+    ctx.fill();
+    ctx.closePath();
+    // draw the lines
+    if (i < path.points2.length - 1) {
+      const p2 = coordToPx(path.points2[i + 1]);
+      ctx.beginPath();
+      ctx.moveTo(p1.x, p1.y);
+      ctx.lineTo(p2.x, p2.y);
+      ctx.stroke();
+      ctx.closePath();
+    }
+  }
+};
+
+
+/**
+ * @brief render for debug mode
+ */
+function renderDebug() {
+  // render the path
+  for (let i = 0; i < debugPath.length; i++) {
+    const p1 = coordToPx(debugPath[i]);
+    // draw the points
+    const radiusSetting = 0.5;
+    const radius = radiusSetting * imgPixelsPerInch;
+    ctx.fillStyle = hslToHex((debugPath[i].velocity/maxSpeed)*180,
+        100, 50);
+    ctx.strokeStyle = ctx.fillStyle;
+    ctx.beginPath();
+    ctx.arc(p1.x, p1.y, radius, 0, 2 * Math.PI);
+    ctx.stroke();
+    ctx.fill();
+    ctx.closePath();
+    // draw the lines
+    if (i < debugPath.length - 1) {
+      const p2 = coordToPx(debugPath[i + 1]);
+      ctx.beginPath();
+      ctx.moveTo(p1.x, p1.y);
+      ctx.lineTo(p2.x, p2.y);
+      ctx.stroke();
+      ctx.closePath();
+    }
+  }
+
+  // draw the robot at the current time stamp
+  const robotPos = new Point();
+  let robotPosPx = new Point();
+  const heading = Math.PI/2 - degToRad(debugDataList[debugDataTime].heading);
+  robotPos.x = debugDataList[debugDataTime].x;
+  robotPos.y = debugDataList[debugDataTime].y;
+  robotPosPx = coordToPx(robotPos);
+  ctx.beginPath();
+  ctx.fillStyle = hslToHex(0, 0, 0);
+  ctx.strokeStyle = hslToHex(0, 0, 0);
+  ctx.arc(robotPosPx.x, robotPosPx.y, 2*imgPixelsPerInch, 0, 2 * Math.PI);
+  ctx.fill();
+  ctx.closePath();
+  ctx.beginPath();
+  ctx.arc(robotPosPx.x, robotPosPx.y, 9*imgPixelsPerInch, 0, 2 * Math.PI);
+  ctx.stroke();
+  ctx.closePath();
+
+  // draw the robot's heading
+  const headingVec = new Point();
+  headingVec.x = robotPos.x + 5*Math.cos(heading);
+  headingVec.y = robotPos.y + 5*Math.sin(heading);
+  const headingVecPx = coordToPx(headingVec);
+  ctx.strokeStyle = hslToHex(184, 100, 63);
+  ctx.beginPath();
+  ctx.lineWidth = 0.5*imgPixelsPerInch;
+  ctx.moveTo(robotPosPx.x, robotPosPx.y);
+  ctx.lineTo(headingVecPx.x, headingVecPx.y);
+  ctx.stroke();
+  ctx.closePath();
+};
+
+
+/**
  * @brief draw the spline
  */
 function render() {
@@ -76,69 +209,13 @@ function render() {
   // draw the field
   ctx.drawImage(img, 0, 0, img.width, img.height, // source rectangle
       0, 0, canvas.width, canvas.height); // destination rectangle
+  // reset line width
+  ctx.lineWidth = 1.0;
 
   // create mode render
   if (mode == 0) {
-    // init
-    getInput();
-    const finalSpacing = Math.round(path.length / inchesPerPoint);
-    path.genPoints(precision, finalSpacing);
-
-    // draw control points
-    for (let i = 0; i < path.splines.length; i++) {
-      const p1 = coordToPx(path.splines[i].p1);
-      const p2 = coordToPx(path.splines[i].p2);
-      const p3 = coordToPx(path.splines[i].p3);
-      const p4 = coordToPx(path.splines[i].p4);
-      ctx.fillStyle = hslToHex(140, 50, 50);
-      ctx.strokeStyle = hslToHex(0, 0, 0);
-      // draw the lines between the control points
-      ctx.beginPath();
-      ctx.moveTo(p1.x, p1.y);
-      ctx.lineTo(p2.x, p2.y);
-      ctx.stroke();
-      ctx.closePath();
-      ctx.beginPath();
-      ctx.moveTo(p3.x, p3.y);
-      ctx.lineTo(p4.x, p4.y);
-      ctx.stroke();
-      ctx.closePath();
-      // draw the control points
-      ctx.beginPath();
-      ctx.arc(p1.x, p1.y, controlPointRadius*imgPixelsPerInch, 0, 2*Math.PI);
-      ctx.arc(p2.x, p2.y, controlPointRadius*imgPixelsPerInch, 0, 2*Math.PI);
-      ctx.fill();
-      ctx.closePath();
-      ctx.beginPath();
-      ctx.arc(p3.x, p3.y, controlPointRadius*imgPixelsPerInch, 0, 2*Math.PI);
-      ctx.arc(p4.x, p4.y, controlPointRadius*imgPixelsPerInch, 0, 2*Math.PI);
-      ctx.fill();
-      ctx.closePath();
-    }
-
-    // draw spline
-    for (let i = 0; i < path.points2.length; i++) {
-      const p1 = coordToPx(path.points2[i]);
-      // draw the points
-      const radiusSetting = 0.5;
-      const radius = radiusSetting * imgPixelsPerInch;
-      ctx.fillStyle = hslToHex((path.points2[i].velocity/maxSpeed)*180,
-          100, 50);
-      ctx.strokeStyle = ctx.fillStyle;
-      ctx.beginPath();
-      ctx.arc(p1.x, p1.y, radius, 0, 2 * Math.PI);
-      ctx.stroke();
-      ctx.fill();
-      ctx.closePath();
-      // draw the lines
-      if (i < path.points2.length - 1) {
-        const p2 = coordToPx(path.points2[i + 1]);
-        ctx.beginPath();
-        ctx.moveTo(p1.x, p1.y);
-        ctx.lineTo(p2.x, p2.y);
-        ctx.stroke();
-        ctx.closePath();
-      }
-    }
+    renderCreate();
+  } else if (debugSet) {
+    renderDebug();
   }
 };

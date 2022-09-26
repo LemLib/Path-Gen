@@ -258,7 +258,7 @@ class Path {
 /**
  * @brief debugDataPoint class
  */
-class debugDataPoint {
+class DebugDataPoint {
   /**
    * @brief constructor for debugDataPoint
    * @param {number} timestamp - the timestamp of the data point
@@ -279,10 +279,10 @@ class debugDataPoint {
   constructor(timestamp, rbtX, rbtY, rbtH, closestX, closestY, lookaheadX,
       lookaheadY, curvature, targetVel, leftTargetVel, rightTargetVel,
       leftVel, rightVel) {
-    this.timestamp = timestamp();
-    this.rbtX = rbtX;
-    this.rbtY = rbtY;
-    this.rbtH = rbtH;
+    this.timestamp = timestamp;
+    this.x = rbtX;
+    this.y = rbtY;
+    this.heading = rbtH;
     this.closestX = closestX;
     this.closestY = closestY;
     this.lookaheadX = lookaheadX;

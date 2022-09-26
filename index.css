@@ -7,6 +7,10 @@ body {
     float: left;
 }
 
+
+/**
+ * This css is used to style the sliders when in create mode
+ */
 .sliderContainer {
     display: flex;
     flex-wrap: wrap;
@@ -37,3 +41,39 @@ body {
     flex-basis: 100%;
     color: black;
 }
+
+
+/**
+ * This css is used to style the sliders when in debug mode
+ */
+.debugContainer {
+    display: flex;
+    flex-wrap: wrap;
+    padding-left: 0;
+    padding-top: 49px;
+}
+
+.debugContainer input {
+    list-style: none;
+    flex-basis: 40%;
+    color: white;
+}
+
+.debugContainer output {
+    list-style: none;
+    flex-basis: 10%;
+    color: white;
+}
+
+.debugContainer label {
+    list-style: none;
+    flex-basis: 40%;
+    color: white;
+}
+
+.debugContainer button {
+    list-style: none;
+    flex-basis: 100%;
+    color: black;
+}
+
