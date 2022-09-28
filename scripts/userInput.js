@@ -56,9 +56,6 @@ const rDVal = document.getElementById('rDVal');
 const rBVal = document.getElementById('rBVal');
 const rGVal = document.getElementById('rGVal');
 
-const debugTimeVal = document.getElementById('timeSliderVal');
-
-
 // buttons
 const downloadRobotBtn = document.getElementById('downloadRobotBtn');
 const downloadPathBtn = document.getElementById('downloadPathBtn');

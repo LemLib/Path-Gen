@@ -482,6 +482,14 @@ uploadDebugBtn.onchange = function() {
       debugDataList.push(debugData);
       debugSet = true;
     }
+
+    // render the debug data
+    debugDataTime = 0;
+    debugTimeSlider.value = 0;
+    renderField();
+    renderDebug();
+    debugDataTime--;
+    debugTimeSlider.value = debugDataTime;
   };
   reader.readAsText(this.files[this.files.length-1]);
 };
@@ -570,5 +578,7 @@ debugTimeSlider.oninput = function() {
   if (debugSet == true) {
     renderField();
     renderDebug();
+    debugDataTime--;
+    debugTimeSlider.value = debugDataTime;
   }
 };
