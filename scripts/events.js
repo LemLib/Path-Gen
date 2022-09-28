@@ -539,6 +539,11 @@ modeBtn.onclick = function() {
 rewindBtn.onclick = function() {
   if (debugDataTime > 0) {
     debugDataTime--;
+    debugTimeSlider.value = debugDataTime;
+    renderField();
+    renderDebug();
+    debugDataTime--;
+    debugTimeSlider.value--;
   }
 };
 
@@ -566,6 +571,11 @@ pauseBtn.onclick = function() {
 forwardBtn.onclick = function() {
   if (debugDataTime < debugDataList.length-1) {
     debugDataTime++;
+    debugTimeSlider.value = debugDataTime;
+    renderField();
+    renderDebug();
+    debugDataTime--;
+    debugTimeSlider.value--;
   }
 };
 
