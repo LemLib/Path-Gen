@@ -1,8 +1,11 @@
 let path = new Path(); // robot path
+let intervalId;
 let debugPath = [];
 let debugDataList = [];
 let debugDataTime = 0;
 let debugSet = false;
+let debugRun = false;
+const fps = 60;
 
 
 // program mode
@@ -68,6 +71,20 @@ function getInput() {
   rB = rBSlider.value;
   rG = rGSlider.value;
 };
+
+
+/**
+ * @brief render the field
+ */
+function renderField() {
+  // draw field
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  // draw the field
+  ctx.drawImage(img, 0, 0, img.width, img.height, // source rectangle
+      0, 0, canvas.width, canvas.height); // destination rectangle
+  // reset line width
+  ctx.lineWidth = 1.0;
+}
 
 
 /**
@@ -204,13 +221,8 @@ function renderDebug() {
  * @brief draw the spline
  */
 function render() {
-  // clear the canvas
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  // draw the field
-  ctx.drawImage(img, 0, 0, img.width, img.height, // source rectangle
-      0, 0, canvas.width, canvas.height); // destination rectangle
-  // reset line width
-  ctx.lineWidth = 1.0;
+  // render the field
+  renderField();
 
   // create mode render
   if (mode == 0) {

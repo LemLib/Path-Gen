@@ -2,6 +2,7 @@
 
 <html>
     <head>
+        <meta charset="utf-8"/>
         <title>Path Generator</title>
         <link rel="icon" type="image/x-icon" href="/images/icon.png">
         <link rel="stylesheet" href="index.css">
@@ -105,13 +106,19 @@
         <div class="debugContainer">
             <input type="file" id="uploadDebugBtn"></input>
             <label for="uploadDebugBtn" id="uploadDebugLabel">Upload Robot Debug Data</label>
+            <button type="button" id="debugBackBtn">&#x23EE;</button>
+            <button type="button" id="debugPauseBtn">&#x23EF;</button>
+            <button type="button" id="debugForwardBtn">&#x23ED;</button>
+            <input type="range" value ="0" min="0" max="100" step="0.1" oninput="this.nextElementSibling.value = this.value" id="timeSlider">
+            <output class="text" id="timeSliderVal">0</output>
+
         </div>
         
         <script src="scripts/point.js"></script>
         <script src="scripts/userInput.js"></script>
         <script src="scripts/spline.js"></script>
         <script src="scripts/robot.js"></script>
-        <script src="scripts/index.js"></script>
+        <script src="scripts/render.js"></script>
         <script src="scripts/events.js"></script>
     </body>
 </html>

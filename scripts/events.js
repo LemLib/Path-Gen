@@ -18,7 +18,7 @@ window.onload = function() {
   path.genPoints(precision, 10);
 
   // draw path every x seconds
-  setInterval(render, 1000/60);
+  intervalId = setInterval(render, 1000/fps);
 };
 
 
@@ -495,6 +495,10 @@ modeBtn.onclick = function() {
   const cols2 = document.getElementsByClassName('debugContainer');
   if (cols[0].style.display === 'none') {
     mode = 0;
+    // set the interval on the render function
+    debugRun = false;
+    clearInterval(intervalId);
+    intervalId = setInterval(render, 1000/fps);
     // show create mode sliders
     for (i = 0; i < cols.length; i++) {
       cols[i].style.display = 'flex';
@@ -505,6 +509,10 @@ modeBtn.onclick = function() {
     }
   } else {
     mode = 1;
+    // clear the interval on render
+    clearInterval(intervalId);
+    // run the render function once
+    render();
     // hide create mode sliders
     for (i = 0; i < cols.length; i++) {
       cols[i].style.display = 'none';
@@ -513,5 +521,39 @@ modeBtn.onclick = function() {
     for (i = 0; i < cols2.length; i++) {
       cols2[i].style.display = 'flex';
     }
+  }
+};
+
+
+/**
+ * @brief rewind button pressed
+ */
+rewindBtn.onclick = function() {
+  if (debugDataTime > 0) {
+    debugDataTime--;
+  }
+};
+
+
+/**
+ * @brief pause/play button pressed
+ */
+pauseBtn.onclick = function() {
+  debugRun = !debugRun;
+  if (debugRun == true) {
+    clearInterval(intervalId);
+    intervalId = setInterval(render, 10);
+  } else {
+    clearInterval(intervalId);
+  }
+};
+
+
+/**
+ * @brief fast forward button pressed
+ */
+forwardBtn.onclick = function() {
+  if (debugDataTime < debugDataList.length-1) {
+    debugDataTime++;
   }
 };

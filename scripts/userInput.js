@@ -1,7 +1,3 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable prefer-const */
-
-
 // sliders
 const lookaheadSlider = document.getElementById('lookahead');
 const decelSlider = document.getElementById('decel');
@@ -65,6 +61,9 @@ const downloadPathBtn = document.getElementById('downloadPathBtn');
 const uploadDebugBtn = document.getElementById('uploadDebugBtn');
 const uploadPathBtn = document.getElementById('uploadPathBtn');
 const modeBtn = document.getElementById('modeBtn');
+const rewindBtn = document.getElementById('debugBackBtn');
+const pauseBtn = document.getElementById('debugPauseBtn');
+const forwardBtn = document.getElementById('debugForwardBtn');
 
 // user settings
 let lookahead = 0.5; // lookahead

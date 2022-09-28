@@ -47,7 +47,7 @@ body {
  * This css is used to style the sliders when in debug mode
  */
 .debugContainer {
-    display: flex;
+    display: none;
     flex-wrap: wrap;
     padding-left: 0;
     padding-top: 49px;
@@ -55,7 +55,7 @@ body {
 
 .debugContainer input {
     list-style: none;
-    flex-basis: 40%;
+    flex-basis: 100%;
     color: white;
 }
 
@@ -73,7 +73,10 @@ body {
 
 .debugContainer button {
     list-style: none;
-    flex-basis: 100%;
+    flex-basis: 10%;
+    width:50px;
+    height:50px;
+    font-size:30px;
     color: black;
 }
 
