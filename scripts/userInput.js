@@ -26,6 +26,8 @@ const rDSlider = document.getElementById('rD');
 const rBSlider = document.getElementById('rB');
 const rGSlider = document.getElementById('rG');
 
+const debugTimeSlider = document.getElementById('timeSlider');
+
 // slider values
 const lookaheadVal = document.getElementById('lookaheadVal');
 const decelVal = document.getElementById('decelVal');
@@ -53,6 +55,8 @@ const rIVal = document.getElementById('rIVal');
 const rDVal = document.getElementById('rDVal');
 const rBVal = document.getElementById('rBVal');
 const rGVal = document.getElementById('rGVal');
+
+const debugTimeVal = document.getElementById('timeSliderVal');
 
 
 // buttons

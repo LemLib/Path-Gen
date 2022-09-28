@@ -460,7 +460,7 @@ uploadDebugBtn.onchange = function() {
     //     leftVel, rightVel
     //
     // loop to get debug data
-    for (i++; i < lines.length; i++) {
+    for (i++; i < lines.length-1; i++) {
       const line = lines[i].split(', ');
       const timestamp = parseFloat(line[0]);
       const rbtX = parseFloat(line[1]);
@@ -541,6 +541,9 @@ rewindBtn.onclick = function() {
 pauseBtn.onclick = function() {
   debugRun = !debugRun;
   if (debugRun == true) {
+    if (debugDataTime == debugDataList.length-1) {
+      debugDataTime = 0;
+    }
     clearInterval(intervalId);
     intervalId = setInterval(render, 10);
   } else {
@@ -555,5 +558,17 @@ pauseBtn.onclick = function() {
 forwardBtn.onclick = function() {
   if (debugDataTime < debugDataList.length-1) {
     debugDataTime++;
+  }
+};
+
+
+/**
+ * @brief debug time slider changed
+ */
+debugTimeSlider.oninput = function() {
+  debugDataTime = this.value;
+  if (debugSet == true) {
+    renderField();
+    renderDebug();
   }
 };

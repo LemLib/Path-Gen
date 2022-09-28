@@ -159,6 +159,10 @@ function renderCreate() {
  * @brief render for debug mode
  */
 function renderDebug() {
+  // get debug data time
+  debugTimeSlider.max = debugDataList.length-1;
+  const debugTime = debugTimeSlider.value;
+
   // render the path
   for (let i = 0; i < debugPath.length; i++) {
     const p1 = coordToPx(debugPath[i]);
@@ -214,6 +218,15 @@ function renderDebug() {
   ctx.lineTo(headingVecPx.x, headingVecPx.y);
   ctx.stroke();
   ctx.closePath();
+
+  // update the time
+  if (debugDataTime < debugDataList.length - 1) {
+    debugDataTime++;
+  } else {
+    debugRun = false;
+    clearInterval(intervalId);
+  }
+  debugTimeSlider.value = debugDataTime;
 };
 
 
