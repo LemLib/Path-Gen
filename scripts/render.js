@@ -189,23 +189,25 @@ function renderDebug() {
   }
 
   // draw the robot at the current time stamp
+  // get robot position
   const robotPos = new Point();
   let robotPosPx = new Point();
   const heading = Math.PI/2 - degToRad(debugDataList[debugDataTime].heading);
   robotPos.x = debugDataList[debugDataTime].x;
   robotPos.y = debugDataList[debugDataTime].y;
   robotPosPx = coordToPx(robotPos);
+  // draw the robot center
   ctx.beginPath();
   ctx.fillStyle = hslToHex(0, 0, 0);
   ctx.strokeStyle = hslToHex(0, 0, 0);
   ctx.arc(robotPosPx.x, robotPosPx.y, 2*imgPixelsPerInch, 0, 2 * Math.PI);
   ctx.fill();
   ctx.closePath();
+  // draw the robot track width
   ctx.beginPath();
   ctx.arc(robotPosPx.x, robotPosPx.y, 9*imgPixelsPerInch, 0, 2 * Math.PI);
   ctx.stroke();
   ctx.closePath();
-
   // draw the robot's heading
   const headingVec = new Point();
   headingVec.x = robotPos.x + 5*Math.cos(heading);
@@ -216,6 +218,35 @@ function renderDebug() {
   ctx.lineWidth = 0.5*imgPixelsPerInch;
   ctx.moveTo(robotPosPx.x, robotPosPx.y);
   ctx.lineTo(headingVecPx.x, headingVecPx.y);
+  ctx.stroke();
+  ctx.closePath();
+
+  // draw the lookahead point
+  ctx.beginPath();
+  ctx.fillStyle = hslToHex(0, 0, 0);
+  ctx.strokeStyle = hslToHex(0, 0, 0);
+  const lookaheadRaw = new Point(debugDataList[debugDataTime].lookaheadX,
+      debugDataList[debugDataTime].lookaheadY);
+  const lookaheadPx = coordToPx(lookaheadRaw);
+  ctx.arc(lookaheadPx.x, lookaheadPx.y, 2*imgPixelsPerInch, 0, 2*Math.PI);
+  ctx.fill();
+  ctx.closePath();
+
+  // draw the curvature arc
+  ctx.beginPath();
+  ctx.strokeStyle = 'red';
+  // calculate the circle
+  const radius = 1/(debugDataList[debugDataTime].curvature);
+  const theta = degToRad(debugDataList[debugDataTime].heading);
+  const midX = debugDataList[debugDataTime].x +
+      radius*Math.cos(theta);
+  const midY = -(debugDataList[debugDataTime].y) -
+      radius*Math.sin(theta);
+  const trueRadius = Math.abs(radius);
+  const mid = new Point(midX, midY);
+  const midPx = coordToPx(mid);
+  // draw the arc
+  ctx.arc(midPx.x, midPx.y, trueRadius*imgPixelsPerInch, 0, 2*Math.PI);
   ctx.stroke();
   ctx.closePath();
 
