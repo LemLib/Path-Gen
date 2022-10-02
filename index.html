@@ -111,6 +111,11 @@
             <button type="button" id="debugForwardBtn">&#x23ED;</button>
             <input type="range" value ="0" min="0" max="100" step="1" oninput="this.nextElementSibling.value = this.value" id="timeSlider">
         </div>
+
+        <div class="graph" id="graphContainer">
+            <canvas id="leftMotorCanvas"></canvas>
+            <canvas id="rightMotorCanvas"></canvas>
+        </div>
         
         <script src="scripts/point.js"></script>
         <script src="scripts/userInput.js"></script>

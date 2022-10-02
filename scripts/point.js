@@ -5,6 +5,11 @@ const canvas = document.getElementById('fieldCanvas');
 const canvasQuery = document.querySelector('canvas');
 const ctx = canvas.getContext('2d');
 const img = new Image();
+const leftMotorGraph = document.getElementById('leftMotorCanvas');
+const rightMotorGraph = document.getElementById('rightMotorCanvas');
+const leftMotorCtx = leftMotorGraph.getContext('2d');
+const rightMotorCtx = rightMotorGraph.getContext('2d');
+const graphContainer = document.getElementById('graphContainer');
 img.src = 'images/Top View Render.png';
 
 /**

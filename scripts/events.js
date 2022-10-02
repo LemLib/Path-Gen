@@ -441,8 +441,14 @@ uploadDebugBtn.onchange = function() {
     // split the data into lines
     const lines = data.split('\n');
 
+    // get constants from the first line
+    const firstLine = lines[0].split(', ');
+    const maxVel = parseFloat(firstLine[0]);
+    const trackWidth = parseFloat(firstLine[1]);
+    debugData = new DebugDataParams(maxVel, trackWidth);
+
     // loop to get path points
-    let i = 0;
+    let i = 1;
     while (lines[i].substr(0, 5) != 'debug') {
       const line = lines[i].split(', ');
       const x = parseFloat(line[0]);
@@ -486,9 +492,9 @@ uploadDebugBtn.onchange = function() {
     // render the debug data
     debugDataTime = 0;
     debugTimeSlider.value = 0;
+    renderGraphs();
     renderField();
     renderDebug();
-    debugDataTime--;
     debugTimeSlider.value = debugDataTime;
   };
   reader.readAsText(this.files[this.files.length-1]);
@@ -501,6 +507,7 @@ uploadDebugBtn.onchange = function() {
 modeBtn.onclick = function() {
   const cols = document.getElementsByClassName('sliderContainer');
   const cols2 = document.getElementsByClassName('debugContainer');
+  const cols3 = document.getElementsByClassName('graph');
   if (cols[0].style.display === 'none') {
     mode = 0;
     // set the interval on the render function
@@ -514,6 +521,10 @@ modeBtn.onclick = function() {
     // hide debug mode sliders
     for (i = 0; i < cols2.length; i++) {
       cols2[i].style.display = 'none';
+    }
+    // hide graphs
+    for (i = 0; i < cols3.length; i++) {
+      cols3[i].style.display = 'none';
     }
   } else {
     mode = 1;
@@ -529,6 +540,10 @@ modeBtn.onclick = function() {
     for (i = 0; i < cols2.length; i++) {
       cols2[i].style.display = 'flex';
     }
+    // show graphs
+    for (i = 0; i < cols3.length; i++) {
+      cols3[i].style.display = 'flex';
+    }
   }
 };
 
@@ -539,11 +554,13 @@ modeBtn.onclick = function() {
 rewindBtn.onclick = function() {
   if (debugDataTime > 0) {
     debugDataTime--;
+    if (debugDataTime == 19) {
+      debugDataTime--;
+    }
     debugTimeSlider.value = debugDataTime;
+    renderGraphs();
     renderField();
     renderDebug();
-    debugDataTime--;
-    debugTimeSlider.value--;
   }
 };
 
@@ -554,7 +571,7 @@ rewindBtn.onclick = function() {
 pauseBtn.onclick = function() {
   debugRun = !debugRun;
   if (debugRun == true) {
-    if (debugDataTime == debugDataList.length-1) {
+    if (debugDataTime == debugDataList.length) {
       debugDataTime = 0;
     }
     clearInterval(intervalId);
@@ -569,13 +586,12 @@ pauseBtn.onclick = function() {
  * @brief fast forward button pressed
  */
 forwardBtn.onclick = function() {
-  if (debugDataTime < debugDataList.length-1) {
+  if (debugDataTime < debugDataList.length - 1) {
     debugDataTime++;
     debugTimeSlider.value = debugDataTime;
+    renderGraphs();
     renderField();
     renderDebug();
-    debugDataTime--;
-    debugTimeSlider.value--;
   }
 };
 
@@ -586,9 +602,8 @@ forwardBtn.onclick = function() {
 debugTimeSlider.oninput = function() {
   debugDataTime = this.value;
   if (debugSet == true) {
+    renderGraphs();
     renderField();
     renderDebug();
-    debugDataTime--;
-    debugTimeSlider.value = debugDataTime;
   }
 };

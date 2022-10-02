@@ -3,6 +3,7 @@ let intervalId;
 let debugPath = [];
 let debugDataList = [];
 let debugDataTime = 0;
+let debugData = 0;
 let debugSet = false;
 let debugRun = false;
 const fps = 60;
@@ -159,9 +160,8 @@ function renderCreate() {
  * @brief render for debug mode
  */
 function renderDebug() {
-  // get debug data time
+  // set slider max
   debugTimeSlider.max = debugDataList.length-1;
-  const debugTime = debugTimeSlider.value;
 
   // render the path
   for (let i = 0; i < debugPath.length; i++) {
@@ -205,7 +205,8 @@ function renderDebug() {
   ctx.closePath();
   // draw the robot track width
   ctx.beginPath();
-  ctx.arc(robotPosPx.x, robotPosPx.y, 9*imgPixelsPerInch, 0, 2 * Math.PI);
+  ctx.arc(robotPosPx.x, robotPosPx.y, debugData.trackWidth*imgPixelsPerInch/2,
+      0, 2 * Math.PI);
   ctx.stroke();
   ctx.closePath();
   // draw the robot's heading
@@ -251,14 +252,207 @@ function renderDebug() {
   ctx.closePath();
 
   // update the time
-  if (debugDataTime < debugDataList.length - 1) {
-    debugDataTime++;
-  } else {
+  if (debugDataTime >= debugDataList.length - 1) {
     debugRun = false;
     clearInterval(intervalId);
   }
-  debugTimeSlider.value = debugDataTime;
 };
+
+
+/**
+ * @brief render the motor velocities
+ */
+function renderGraphs() {
+  // get left motor canvas width and length
+  const width = 300;
+  const height = 150;
+
+  // reset left motor canvas
+  leftMotorCtx.beginPath();
+  leftMotorCtx.fillStyle = hslToHex(0, 0, 60);
+  leftMotorCtx.fillRect(0, 0, width, height);
+  leftMotorCtx.fill();
+  leftMotorCtx.font = '15px Arial';
+  leftMotorCtx.fillStyle = 'red';
+  leftMotorCtx.textAlign = 'center';
+  leftMotorCtx.fillText('Left Motor', 150, 12);
+  leftMotorCtx.fillStyle = 'red';
+  leftMotorCtx.fillRect(60, 135, 10, 10);
+  leftMotorCtx.fillStyle = 'black';
+  leftMotorCtx.font = '10px Arial';
+  leftMotorCtx.fillText('Actual Velocity', 105, 143);
+  leftMotorCtx.fill();
+  leftMotorCtx.fillStyle = 'blue';
+  leftMotorCtx.fillRect(175, 135, 10, 10);
+  leftMotorCtx.fillStyle = 'black';
+  leftMotorCtx.font = '10px Arial';
+  leftMotorCtx.fillText('Target Velocity', 220, 143);
+  leftMotorCtx.fill();
+  leftMotorCtx.closePath();
+
+  // draw the left motor graph axis
+  leftMotorCtx.beginPath();
+  leftMotorCtx.strokeStyle = hslToHex(0, 0, 0);
+  leftMotorCtx.lineWidth = 1;
+  // bottom line
+  leftMotorCtx.moveTo(20, height-20);
+  leftMotorCtx.lineTo(width-20, height-20);
+  // middle line
+  leftMotorCtx.moveTo(20, height/2);
+  leftMotorCtx.lineTo(width-20, height/2);
+  // top line
+  leftMotorCtx.moveTo(20, 20);
+  leftMotorCtx.lineTo(width-20, 20);
+  // left vertical line
+  leftMotorCtx.moveTo(20, 20);
+  leftMotorCtx.lineTo(20, height-20);
+  // right vertical line
+  leftMotorCtx.moveTo(width-20, 20);
+  leftMotorCtx.lineTo(width-20, height-20);
+  // draw the left motor graph labels
+  leftMotorCtx.font = '15px Arial';
+  leftMotorCtx.fillStyle = 'red';
+  leftMotorCtx.textAlign = 'center';
+  leftMotorCtx.fillText(-debugData.maxVel, 15, 145); // origin
+  leftMotorCtx.fillText('0', 10, 80); // middle
+  leftMotorCtx.fillText(debugData.maxVel, 15, 13); // top
+  // close the path
+  leftMotorCtx.stroke();
+  leftMotorCtx.closePath();
+
+  // draw the left motor actual velocity graph
+  leftMotorCtx.strokeStyle = 'red';
+  for (let i = 0; i <= debugDataTime; i++) {
+    leftMotorCtx.beginPath();
+    // get the x and y coordinates
+    let x0 = 20;
+    let y0 = 75;
+    if (i > 0) {
+      x0 = 20 + ((i-1)/(debugDataList.length-1))*260;
+      y0 = 75 - (debugDataList[i-1].leftVel/debugData.maxVel)*55;
+    }
+    const x1 = 20 + (i/(debugDataList.length-1))*260;
+    const y1 = 75 - (debugDataList[i].leftVel/debugData.maxVel)*55;
+    leftMotorCtx.moveTo(x0, y0);
+    leftMotorCtx.lineTo(x1, y1);
+    // draw the line
+    leftMotorCtx.stroke();
+    leftMotorCtx.closePath();
+  }
+
+  // draw the left motor target velocity graph
+  leftMotorCtx.strokeStyle = 'blue';
+  for (let i = 0; i <= debugDataTime; i++) {
+    leftMotorCtx.beginPath();
+    // get the x and y coordinates
+    let x0 = 20;
+    let y0 = 75;
+    if (i > 0) {
+      x0 = 20 + ((i-1)/(debugDataList.length-1))*260;
+      y0 = 75 - (debugDataList[i-1].leftTargetVel/debugData.maxVel)*55;
+    }
+    const x1 = 20 + (i/(debugDataList.length-1))*260;
+    const y1 = 75 - (debugDataList[i].leftTargetVel/debugData.maxVel)*55;
+    leftMotorCtx.moveTo(x0, y0);
+    leftMotorCtx.lineTo(x1, y1);
+    // draw the line
+    leftMotorCtx.stroke();
+    leftMotorCtx.closePath();
+  }
+
+  // reset right motor canvas
+  rightMotorCtx.beginPath();
+  rightMotorCtx.fillStyle = hslToHex(0, 0, 60);
+  rightMotorCtx.fillRect(0, 0, width, height);
+  leftMotorCtx.font = '15px Arial';
+  rightMotorCtx.fillStyle = 'red';
+  rightMotorCtx.textAlign = 'center';
+  rightMotorCtx.fillText('Right Motor', 150, 12);
+  rightMotorCtx.fillStyle = 'red';
+  rightMotorCtx.fillRect(60, 135, 10, 10);
+  rightMotorCtx.fillStyle = 'black';
+  rightMotorCtx.font = '10px Arial';
+  rightMotorCtx.fillText('Actual Velocity', 105, 143);
+  rightMotorCtx.fill();
+  rightMotorCtx.fillStyle = 'blue';
+  rightMotorCtx.fillRect(175, 135, 10, 10);
+  rightMotorCtx.fillStyle = 'black';
+  rightMotorCtx.font = '10px Arial';
+  rightMotorCtx.fillText('Target Velocity', 220, 143);
+  rightMotorCtx.fill();
+  rightMotorCtx.closePath();
+  rightMotorCtx.fill();
+
+  // draw the right motor graph axis
+  rightMotorCtx.beginPath();
+  rightMotorCtx.strokeStyle = hslToHex(0, 0, 0);
+  rightMotorCtx.lineWidth = 1;
+  // bottom line
+  rightMotorCtx.moveTo(20, height-20);
+  rightMotorCtx.lineTo(width-20, height-20);
+  // middle line
+  rightMotorCtx.moveTo(20, height/2);
+  rightMotorCtx.lineTo(width-20, height/2);
+  // top line
+  rightMotorCtx.moveTo(20, 20);
+  rightMotorCtx.lineTo(width-20, 20);
+  // left vertical line
+  rightMotorCtx.moveTo(20, 20);
+  rightMotorCtx.lineTo(20, height-20);
+  // right vertical line
+  rightMotorCtx.moveTo(width-20, 20);
+  rightMotorCtx.lineTo(width-20, height-20);
+  // draw the right motor graph labels
+  rightMotorCtx.font = '15px Arial';
+  rightMotorCtx.fillStyle = 'red';
+  rightMotorCtx.textAlign = 'center';
+  rightMotorCtx.fillText(-debugData.maxVel, 15, 145); // origin
+  rightMotorCtx.fillText('0', 10, 80); // middle
+  rightMotorCtx.fillText(debugData.maxVel, 15, 13); // top
+  // close the path
+  rightMotorCtx.stroke();
+  rightMotorCtx.closePath();
+
+  // draw the right motor actual velocity graph
+  rightMotorCtx.strokeStyle = 'red';
+  for (let i = 0; i <= debugDataTime; i++) {
+    rightMotorCtx.beginPath();
+    // get the x and y coordinates
+    let x0 = 20;
+    let y0 = 75;
+    if (i > 0) {
+      x0 = 20 + ((i-1)/(debugDataList.length-1))*260;
+      y0 = 75 - (debugDataList[i-1].rightVel/debugData.maxVel)*55;
+    }
+    const x1 = 20 + (i/(debugDataList.length-1))*260;
+    const y1 = 75 - (debugDataList[i].rightVel/debugData.maxVel)*55;
+    rightMotorCtx.moveTo(x0, y0);
+    rightMotorCtx.lineTo(x1, y1);
+    // draw the line
+    rightMotorCtx.stroke();
+    rightMotorCtx.closePath();
+  }
+
+  // draw the right motor target velocity graph
+  rightMotorCtx.strokeStyle = 'blue';
+  for (let i = 0; i <= debugDataTime; i++) {
+    rightMotorCtx.beginPath();
+    // get the x and y coordinates
+    let x0 = 20;
+    let y0 = 75;
+    if (i > 0) {
+      x0 = 20 + ((i-1)/(debugDataList.length-1))*260;
+      y0 = 75 - (debugDataList[i-1].rightTargetVel/debugData.maxVel)*55;
+    }
+    const x1 = 20 + (i/(debugDataList.length-1))*260;
+    const y1 = 75 - (debugDataList[i].rightTargetVel/debugData.maxVel)*55;
+    rightMotorCtx.moveTo(x0, y0);
+    rightMotorCtx.lineTo(x1, y1);
+    // draw the line
+    rightMotorCtx.stroke();
+    rightMotorCtx.closePath();
+  }
+}
 
 
 /**
@@ -272,6 +466,9 @@ function render() {
   if (mode == 0) {
     renderCreate();
   } else if (debugSet) {
+    renderGraphs();
     renderDebug();
+    debugDataTime++;
+    debugTimeSlider.value = debugDataTime;
   }
 };

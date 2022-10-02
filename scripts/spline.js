@@ -295,3 +295,19 @@ class DebugDataPoint {
     this.rightVel = rightVel;
   };
 };
+
+
+/**
+ * @brief debugData class
+ */
+class DebugDataParams {
+  /**
+   * @brief constructor for debugDataParams
+   * @param {number} maxVel - the maximum velocity of the robot
+   * @param {number} trackWidth - the track width of the robot
+   */
+  constructor(maxVel, trackWidth) {
+    this.maxVel = maxVel;
+    this.trackWidth = trackWidth;
+  };
+};

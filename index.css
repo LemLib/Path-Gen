@@ -80,3 +80,17 @@ body {
     color: black;
 }
 
+
+.graph {
+    display: none;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding-top: 25px;
+    gap: 25px 25px;
+}
+
+.graph canvas {
+    width: 60%;
+    height: 35%;
+    border: 1px solid hwb(0 0% 100%);
+}
