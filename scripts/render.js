@@ -323,41 +323,35 @@ function renderGraphs() {
   // draw the left motor actual velocity graph
   leftMotorCtx.strokeStyle = 'red';
   for (let i = 0; i <= debugDataTime; i++) {
-    leftMotorCtx.beginPath();
-    // get the x and y coordinates
-    let x0 = 20;
-    let y0 = 75;
     if (i > 0) {
+      leftMotorCtx.beginPath();
       x0 = 20 + ((i-1)/(debugDataList.length-1))*260;
       y0 = 75 - (debugDataList[i-1].leftVel/debugData.maxVel)*55;
+      const x1 = 20 + (i/(debugDataList.length-1))*260;
+      const y1 = 75 - (debugDataList[i].leftVel/debugData.maxVel)*55;
+      leftMotorCtx.moveTo(x0, y0);
+      leftMotorCtx.lineTo(x1, y1);
+      // draw the line
+      leftMotorCtx.stroke();
+      leftMotorCtx.closePath();
     }
-    const x1 = 20 + (i/(debugDataList.length-1))*260;
-    const y1 = 75 - (debugDataList[i].leftVel/debugData.maxVel)*55;
-    leftMotorCtx.moveTo(x0, y0);
-    leftMotorCtx.lineTo(x1, y1);
-    // draw the line
-    leftMotorCtx.stroke();
-    leftMotorCtx.closePath();
   }
 
   // draw the left motor target velocity graph
   leftMotorCtx.strokeStyle = 'blue';
   for (let i = 0; i <= debugDataTime; i++) {
-    leftMotorCtx.beginPath();
-    // get the x and y coordinates
-    let x0 = 20;
-    let y0 = 75;
     if (i > 0) {
+      leftMotorCtx.beginPath();
       x0 = 20 + ((i-1)/(debugDataList.length-1))*260;
       y0 = 75 - (debugDataList[i-1].leftTargetVel/debugData.maxVel)*55;
+      const x1 = 20 + (i/(debugDataList.length-1))*260;
+      const y1 = 75 - (debugDataList[i].leftTargetVel/debugData.maxVel)*55;
+      leftMotorCtx.moveTo(x0, y0);
+      leftMotorCtx.lineTo(x1, y1);
+      // draw the line
+      leftMotorCtx.stroke();
+      leftMotorCtx.closePath();
     }
-    const x1 = 20 + (i/(debugDataList.length-1))*260;
-    const y1 = 75 - (debugDataList[i].leftTargetVel/debugData.maxVel)*55;
-    leftMotorCtx.moveTo(x0, y0);
-    leftMotorCtx.lineTo(x1, y1);
-    // draw the line
-    leftMotorCtx.stroke();
-    leftMotorCtx.closePath();
   }
 
   // reset right motor canvas
