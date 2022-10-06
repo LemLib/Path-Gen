@@ -530,8 +530,18 @@ modeBtn.onclick = function() {
     mode = 1;
     // clear the interval on render
     clearInterval(intervalId);
+    // set debugDataTime to the maximum
+    if (debugDataTime == debugDataList.length) {
+      debugDataTime = debugDataList.length-1;
+      debugTimeSlider.value = debugDataTime;
+    }
     // run the render function once
     render();
+    // subtract 1 from the debugDataTime if debugSet is true
+    if (debugSet) {
+      debugDataTime--;
+      debugTimeSlider.value = debugDataTime;
+    }
     // hide create mode sliders
     for (i = 0; i < cols.length; i++) {
       cols[i].style.display = 'none';
