@@ -9,6 +9,16 @@ let debugRun = false;
 const fps = 60;
 
 
+/**
+ * @brief is a variable positive or negative
+ * @param {number} x - the variable to check
+ * @return {number} - 1 if positive, -1 if negative
+ */
+function sgn(x) {
+  return x > 0 ? 1 : x < 0 ? -1 : 0;
+}
+
+
 // program mode
 // 0 = create
 // 1 = debug
@@ -192,7 +202,7 @@ function renderDebug() {
   // get robot position
   const robotPos = new Point();
   let robotPosPx = new Point();
-  const heading = Math.PI/2 - degToRad(debugDataList[debugDataTime].heading);
+  let heading = Math.PI/2 - degToRad(debugDataList[debugDataTime].heading);
   robotPos.x = debugDataList[debugDataTime].x;
   robotPos.y = debugDataList[debugDataTime].y;
   robotPosPx = coordToPx(robotPos);
@@ -234,22 +244,38 @@ function renderDebug() {
   ctx.closePath();
 
   // draw the curvature arc
+  heading = degToRad(debugDataList[debugDataTime].heading);
   ctx.beginPath();
   ctx.strokeStyle = 'red';
   // calculate the circle
+  if (Math.abs(debugDataList[debugDataTime].curvature) < 0.005) {
+    debugDataList[debugDataTime].curvature = 0.005; // * sgn(curvature);
+  }
   const radius = 1/(debugDataList[debugDataTime].curvature);
-  const theta = degToRad(debugDataList[debugDataTime].heading);
-  const midX = debugDataList[debugDataTime].x +
-      radius*Math.cos(theta);
-  const midY = -(debugDataList[debugDataTime].y) -
-      radius*Math.sin(theta);
   const trueRadius = Math.abs(radius);
-  const mid = new Point(midX, midY);
+  const x3 = (robotPos.x + lookaheadRaw.x) / 2;
+  const y3 = (robotPos.y + lookaheadRaw.y) / 2;
+  const q = Math.sqrt(Math.pow(robotPos.x - lookaheadRaw.x, 2) +
+      Math.pow(robotPos.y - lookaheadRaw.y, 2));
+  const b = Math.sqrt(Math.pow(radius, 2) - Math.pow(q / 2, 2));
+
+  const x = x3 - b * (robotPos.y - lookaheadRaw.y) / q *
+      sgn(Math.abs(debugDataList[debugDataTime].curvature));
+  const y = y3 - b * (lookaheadRaw.x - robotPos.x) / q *
+      sgn(Math.abs(debugDataList[debugDataTime].curvature));
+
+  const mid = new Point(x, y);
   const midPx = coordToPx(mid);
   // draw the arc
   ctx.arc(midPx.x, midPx.y, trueRadius*imgPixelsPerInch, 0, 2*Math.PI);
   ctx.stroke();
   ctx.closePath();
+
+  // x = robot.x + radius*cos(heading - pi/2)
+  // y = robot.y + radius*sin(heading - pi/2)
+  // radius = 1/curvature
+  // start angle = 0
+  // end angle = 2*pi
 
   // update the time
   if (debugDataTime >= debugDataList.length - 1) {
