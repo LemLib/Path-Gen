@@ -260,9 +260,9 @@ function renderDebug() {
   const b = Math.sqrt(Math.pow(radius, 2) - Math.pow(q / 2, 2));
 
   const x = x3 - b * (robotPos.y - lookaheadRaw.y) / q *
-      sgn(Math.abs(debugDataList[debugDataTime].curvature));
+      sgn(debugDataList[debugDataTime].curvature);
   const y = y3 - b * (lookaheadRaw.x - robotPos.x) / q *
-      sgn(Math.abs(debugDataList[debugDataTime].curvature));
+      sgn(debugDataList[debugDataTime].curvature);
 
   const mid = new Point(x, y);
   const midPx = coordToPx(mid);
