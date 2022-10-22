@@ -271,12 +271,6 @@ function renderDebug() {
   ctx.stroke();
   ctx.closePath();
 
-  // x = robot.x + radius*cos(heading - pi/2)
-  // y = robot.y + radius*sin(heading - pi/2)
-  // radius = 1/curvature
-  // start angle = 0
-  // end angle = 2*pi
-
   // update the time
   if (debugDataTime >= debugDataList.length - 1) {
     debugRun = false;
@@ -490,5 +484,15 @@ function render() {
     renderDebug();
     debugDataTime++;
     debugTimeSlider.value = debugDataTime;
+  }
+
+  // show the mouse position
+  ctx.beginPath();
+  ctx.fillStyle = 'black';
+  leftMotorCtx.font = '100px Arial';
+  if (typeof(mousePos) != 'undefined') {
+    ctx.fillText(Math.round(mousePos.x) + ', ' +
+                  Math.round(mousePos.y), 30, 650);
+    ctx.closePath();
   }
 };
