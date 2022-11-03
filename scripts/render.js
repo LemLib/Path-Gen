@@ -336,9 +336,9 @@ function renderGraphs() {
   leftMotorCtx.font = '15px Arial';
   leftMotorCtx.fillStyle = 'red';
   leftMotorCtx.textAlign = 'center';
-  leftMotorCtx.fillText(-debugData.maxVel, 15, 145); // origin
+  leftMotorCtx.fillText(Math.round(-debugData.maxVel), 15, 145); // origin
   leftMotorCtx.fillText('0', 10, 80); // middle
-  leftMotorCtx.fillText(debugData.maxVel, 15, 13); // top
+  leftMotorCtx.fillText(Math.round(debugData.maxVel), 15, 13); // top
   // close the path
   leftMotorCtx.stroke();
   leftMotorCtx.closePath();
@@ -423,9 +423,9 @@ function renderGraphs() {
   rightMotorCtx.font = '15px Arial';
   rightMotorCtx.fillStyle = 'red';
   rightMotorCtx.textAlign = 'center';
-  rightMotorCtx.fillText(-debugData.maxVel, 15, 145); // origin
+  rightMotorCtx.fillText(Math.round(-debugData.maxVel), 15, 145); // origin
   rightMotorCtx.fillText('0', 10, 80); // middle
-  rightMotorCtx.fillText(debugData.maxVel, 15, 13); // top
+  rightMotorCtx.fillText(Math.round(debugData.maxVel), 15, 13); // top
   // close the path
   rightMotorCtx.stroke();
   rightMotorCtx.closePath();
