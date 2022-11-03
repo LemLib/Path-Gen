@@ -443,22 +443,26 @@ uploadDebugBtn.onchange = function() {
 
     // get constants from the first line
     const firstLine = lines[0].split(', ');
-    const maxVel = parseFloat(firstLine[0]);
     const trackWidth = parseFloat(firstLine[1]);
-    debugData = new DebugDataParams(maxVel, trackWidth);
 
     // loop to get path points
     let i = 1;
+    let maxVel = 0;
     while (lines[i].substr(0, 5) != 'debug') {
       const line = lines[i].split(', ');
       const x = parseFloat(line[0]);
       const y = parseFloat(line[1]);
       const velocity = parseFloat(line[2]);
+      if (Math.abs(velocity) > maxVel) {
+        maxVel = velocity;
+      }
       const p = new Point(x, y);
       p.velocity = velocity;
       debugPath.push(p);
       i++;
     }
+
+    debugData = new DebugDataParams(maxVel, trackWidth);
 
     // Debug Data Format
     // timestamp, rbtX, rbtY, rbtH, closestX, closestY, lookaheadX, lookaheadY,

@@ -244,14 +244,17 @@ function renderDebug() {
   ctx.closePath();
 
   // draw the curvature arc
+  let curvature = debugDataList[debugDataTime].curvature;
   heading = degToRad(debugDataList[debugDataTime].heading);
   ctx.beginPath();
   ctx.strokeStyle = 'red';
   // calculate the circle
-  if (Math.abs(debugDataList[debugDataTime].curvature) < 0.005) {
-    debugDataList[debugDataTime].curvature = 0.005; // * sgn(curvature);
+  if (curvature < 0.001 && curvature > 0) {
+    curvature = 0.001;
+  } else if (curvature > -0.001 && curvature < 0) {
+    curvature = -0.001;
   }
-  const radius = 1/(debugDataList[debugDataTime].curvature);
+  const radius = 1/curvature;
   const trueRadius = Math.abs(radius);
   const x3 = (robotPos.x + lookaheadRaw.x) / 2;
   const y3 = (robotPos.y + lookaheadRaw.y) / 2;
@@ -260,9 +263,9 @@ function renderDebug() {
   const b = Math.sqrt(Math.pow(radius, 2) - Math.pow(q / 2, 2));
 
   const x = x3 - b * (robotPos.y - lookaheadRaw.y) / q *
-      sgn(debugDataList[debugDataTime].curvature);
+      sgn(curvature);
   const y = y3 - b * (lookaheadRaw.x - robotPos.x) / q *
-      sgn(debugDataList[debugDataTime].curvature);
+      sgn(curvature);
 
   const mid = new Point(x, y);
   const midPx = coordToPx(mid);
