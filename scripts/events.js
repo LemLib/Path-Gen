@@ -44,6 +44,7 @@ function getCursorPosition(canvas, event) {
    */
 canvasQuery.onmousedown = function(event) {
   if (mode == 0) {
+    rightClickHighlighted = [];
     if (event.button == 0) {
       for (let i = 0; i < path.splines.length; i++) {
         // p1
@@ -102,13 +103,17 @@ canvasQuery.onmousedown = function(event) {
     } else if (event.button == 2) {
       const v1 = new Vector(path.splines[0].p1, mousePos);
       const v4 = new Vector(path.splines[path.splines.length-1].p4, mousePos);
-      if (v4.getMagnitude() < controlPointRadius*2 && path.splines.length > 1) {
+      if (v4.getMagnitude() < controlPointRadius*2 && path.splines.length > 1 && rightClickHold == false) {
         // remove the last spline
         path.splines.pop();
-      }
-      if (v1.getMagnitude() < controlPointRadius*2 && path.splines.length > 1) {
+      } else if (v1.getMagnitude() < controlPointRadius*2 && path.splines.length > 1 && rightClickHold == false) {
         // remove the first spline
         path.splines.shift();
+      } else {
+        if (rightClickHold == false) {
+          rightClickHoldStart = mousePos;
+        }
+        rightClickHold = true;
       }
     }
   }
@@ -122,6 +127,21 @@ canvasQuery.onmousedown = function(event) {
 canvasQuery.onmouseup = function(event) {
   if (mode == 0) {
     controlPointHold = false;
+    if (rightClickHold == true) {
+      // set right click hold to false
+      rightClickHold = false;
+      // get the points at the start and the end of the click
+      const start = coordToPx(rightClickHoldStart);
+      const end = coordToPx(mousePos);
+      // add all the path points that are in the box to the highlighted array
+      for (let i = 0; i < path.points2.length; i++) {
+        const p = coordToPx(path.points2[i]);
+        if (p.x > start.x && p.x < end.x && p.y > start.y && p.y < end.y) {
+          path.points2[i].velocity = path.points2[i].velocity * (parseFloat(speedP.value));
+          rightClickHighlighted.push(p);
+        }
+      }
+    }
   }
 };
 

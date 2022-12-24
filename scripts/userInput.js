@@ -7,6 +7,7 @@ const precisionSlider = document.getElementById('precision');
 const inchesPerPointSlider = document.getElementById('inchesPerPoint');
 const trackWidthSlider = document.getElementById('trackWidth');
 const deactivateDistSlider = document.getElementById('deactivate');
+const speedP = document.getElementById('sped');
 
 const lFSlider = document.getElementById('lF');
 const lASlider = document.getElementById('lA');

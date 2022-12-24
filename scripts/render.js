@@ -8,6 +8,10 @@ let debugSet = false;
 let debugRun = false;
 const fps = 60;
 
+// right click drag tracker
+let rightClickHold = false;
+let rightClickHoldStart;
+let rightClickHighlighted = [];
 
 /**
  * @brief is a variable positive or negative
@@ -107,6 +111,16 @@ function renderCreate() {
   const finalSpacing = Math.round(path.length / inchesPerPoint);
   path.genPoints(precision, finalSpacing);
 
+  // draw highlighted points
+  for (let i = 0; i < rightClickHighlighted.length; i++) {
+    const tempPos = rightClickHighlighted[i];
+    ctx.beginPath();
+    ctx.fillStyle = '#777777';
+    ctx.arc(tempPos.x, tempPos.y, imgPixelsPerInch*1.5, 0, 2 * Math.PI);
+    ctx.fill();
+    ctx.closePath();
+  }
+
   // draw control points
   for (let i = 0; i < path.splines.length; i++) {
     const p1 = coordToPx(path.splines[i].p1);
@@ -153,6 +167,7 @@ function renderCreate() {
     ctx.stroke();
     ctx.fill();
     ctx.closePath();
+    // add highlight to highlighted points
     // draw the lines
     if (i < path.points2.length - 1) {
       const p2 = coordToPx(path.points2[i + 1]);
@@ -482,6 +497,18 @@ function render() {
   // create mode render
   if (mode == 0) {
     renderCreate();
+    if (rightClickHold) {
+      // init variables
+      const p1 = coordToPx(rightClickHoldStart);
+      const p2 = coordToPx(mousePos);
+      const width = p2.x - p1.x;
+      const height = p2.y - p1.y;
+      // draw the rectangle
+      ctx.beginPath();
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+      ctx.fillRect(p1.x, p1.y, width, height);
+      ctx.closePath();
+    }
   } else if (debugSet) {
     renderGraphs();
     renderDebug();
