@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @brief Class for vectors
  */
@@ -7,8 +9,9 @@ class Vector {
    * @param {number} x x coordinate
    * @param {number} y y coordinate
    * @param {number} data data
+   * @param {number} data2 data2
    */
-  constructor(x, y, data = 0) {
+  constructor(x, y, data = 0, data2 = 0) {
     this.x = x;
     this.y = y;
     this.data = data;
@@ -83,6 +86,22 @@ class Vector {
   static distance(v1, v2) {
     return Math.sqrt((v1.x - v2.x) * (v1.x - v2.x) +
         (v1.y - v2.y) * (v1.y - v2.y));
+  }
+
+  /**
+   * @brief interpolate between two points
+   * @param {number} d - the distance
+   * @param {Vector} v1 - the first point
+   * @param {Vector} v2 - the second point
+   * @return {Vector} - the interpolated point
+   */
+  static interpolate(d, v1, v2) {
+    // use trig to find the angle between the two points
+    const angle = Math.atan2(v2.y - v1.y, v2.x - v1.x);
+    // use the angle to find the x and y components of the vector
+    const x = (d * Math.cos(angle)) + v1.x;
+    const y = (d * Math.sin(angle)) + v2.y;
+    return new Vector(x, y);
   }
 
   /**

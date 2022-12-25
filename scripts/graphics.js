@@ -1,3 +1,5 @@
+'use strict';
+
 const canvas = document.getElementById('fieldCanvas');
 const ctx = canvas.getContext('2d');
 
@@ -18,6 +20,7 @@ const imgPixelsPerInch = imgActualWidth / imgTrueWidth;
  */
 class Line {
   static instances = []; // store all instances of the class
+
   /**
    * @brief constructor
    * @param {Vector} start start point
@@ -30,7 +33,18 @@ class Line {
     this.end = end;
     this.width = width;
     this.color = color;
+    this.index = Line.instances.length;
     Line.instances.push(this);
+  }
+
+  /**
+   * @brief remove the line from the canvas
+   */
+  remove() {
+    Line.instances.splice(this.index, 1);
+    for (let i = this.index; i < Line.instances.length; i++) {
+      Line.instances[i].index--;
+    }
   }
 };
 
@@ -40,6 +54,7 @@ class Line {
  */
 class Rectangle {
   static instances = []; // store all instances of the class
+
   /**
    * @brief constructor
    * @param {Vector} start start point
@@ -55,15 +70,28 @@ class Rectangle {
     this.color = color;
     this.borderWidth = borderWidth;
     this.borderColor = borderColor;
+    this.index = Rectangle.instances.length;
     Rectangle.instances.push(this);
   }
+
+  /**
+   * @brief remove the rectangle from the canvas
+   */
+  remove() {
+    Rectangle.instances.splice(this.index, 1);
+    for (let i = this.index; i < Rectangle.instances.length; i++) {
+      Rectangle.instances[i].index--;
+    }
+  }
 };
+
 
 /**
  * @brief Circle class
  */
 class Circle {
   static instances = []; // store all instances of the class
+
   /**
    * @brief constructor
    * @param {Vector} center center point
@@ -79,7 +107,18 @@ class Circle {
     this.color = color;
     this.borderWidth = borderWidth;
     this.borderColor = borderColor;
+    this.index = Circle.instances.length;
     Circle.instances.push(this);
+  }
+
+  /**
+   * @brief remove the circle from the canvas
+   */
+  remove() {
+    Circle.instances.splice(this.index, 1);
+    for (let i = this.index; i < Circle.instances.length; i++) {
+      Circle.instances[i].index--;
+    }
   }
 }
 
