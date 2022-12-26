@@ -124,6 +124,42 @@ class Circle {
 
 
 /**
+ * @brief Text class
+ */
+class SimpleText {
+  static instances = []; // store all instances of the class
+
+  /**
+   * @brief constructor
+   * @param {Vector} position position
+   * @param {String} text text
+   * @param {String} color text color (hex)
+   * @param {Number} size text size
+   * @param {String} font text font
+   */
+  constructor(position, text, color = 'black', size = 12, font = 'Arial') {
+    this.position = position;
+    this.text = text;
+    this.color = color;
+    this.size = size;
+    this.font = font;
+    this.index = SimpleText.instances.length;
+    SimpleText.instances.push(this);
+  }
+
+  /**
+   * @brief remove the text from the canvas
+   */
+  remove() {
+    SimpleText.instances.splice(this.index, 1);
+    for (let i = this.index; i < SimpleText.instances.length; i++) {
+      SimpleText.instances[i].index--;
+    }
+  }
+};
+
+
+/**
  * @brief convert the mouse position to position in coordinate system
  * @param {Vector} point - the mouse position
  * @return {Vector} - the position in the coordinate system
@@ -172,7 +208,7 @@ function render() {
     ctx.beginPath();
     ctx.moveTo(start.x, start.y);
     ctx.lineTo(end.x, end.y);
-    ctx.lineWidth = line.width;
+    ctx.lineWidth = line.width*imgPixelsPerInch;
     ctx.strokeStyle = line.color;
     ctx.stroke();
     ctx.closePath();
@@ -187,7 +223,7 @@ function render() {
     ctx.rect(start.x, start.y, end.x - start.x, end.y - start.y);
     ctx.fillStyle = rect.color;
     ctx.fill();
-    ctx.lineWidth = rect.borderWidth;
+    ctx.lineWidth = rect.borderWidth*imgPixelsPerInch;
     ctx.strokeStyle = rect.borderColor;
     ctx.stroke();
     ctx.closePath();
@@ -202,9 +238,20 @@ function render() {
         0, 2 * Math.PI);
     ctx.fillStyle = circle.color;
     ctx.fill();
-    ctx.lineWidth = circle.borderWidth;
+    ctx.lineWidth = circle.borderWidth*imgPixelsPerInch;
     ctx.strokeStyle = circle.borderColor;
     ctx.stroke();
+    ctx.closePath();
+  }
+
+  // draw all texts
+  for (let i = 0; i < SimpleText.instances.length; i++) {
+    const text = SimpleText.instances[i];
+    const position = coordToPx(text.position);
+    ctx.beginPath();
+    ctx.font = text.size * imgPixelsPerInch + 'px ' + text.font;
+    ctx.fillStyle = text.color;
+    ctx.fillText(text.text, position.x, position.y);
     ctx.closePath();
   }
 }
@@ -212,3 +259,22 @@ function render() {
 
 // make the render function run regularly
 setInterval(render, 1000 / 60);
+
+
+/**
+ * @brief convert an HSl color code to Hex
+ * @param {number} h - the hue
+ * @param {number} s - the saturation
+ * @param {number} l - the lightness
+ * @return {string} - the hex color code
+ */
+function hslToHex(h, s, l) {
+  l /= 100;
+  const a = s * Math.min(l, 1 - l) / 100;
+  const f = (n) => {
+    const k = (n + h / 30) % 12;
+    const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+    return Math.round(255 * color).toString(16).padStart(2, '0');
+  };
+  return `#${f(0)}${f(8)}${f(4)}`;
+};

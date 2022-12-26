@@ -1,10 +1,10 @@
 'use strict';
 
 // dev settings
-const spacing = 2;
+const spacing = 2; // target inches between points
 const curvatureMultiplier = 100;
-const decel = 20000;
-const maxSpeed = 1000000;
+const decel = 100;
+const maxSpeed = 100;
 
 
 /**
@@ -31,7 +31,7 @@ class Spline {
    * @brief get the points on the spline
    */
   genPoints() {
-    for (let t = 0; t < 1; t += 0.01) {
+    for (let t = 0; t <= 1; t += 0.01) {
       t = parseFloat(t.toPrecision(10));
       const tempIndex = parseFloat((t*100).toPrecision(10));
       const x = (1-t)**3*this.p1.x + 3*t*(1-t)**2*this.p2.x +
@@ -73,7 +73,8 @@ class Path {
     this.segments = [s1, s2];
     this.points = [];
     this.circles = [];
-    this.init();
+    this.lines = [];
+    this.update();
   }
 
   /**
@@ -82,7 +83,59 @@ class Path {
    */
   addSegment(segment) {
     this.segments.push(segment);
-    this.init();
+    this.update();
+  }
+
+  /**
+   * @brief remove a segment from the path
+   * @param {Number} pos - the first or last segment to remove (0 or 1)
+   * @Note this will only work if there are more than 2 segments
+   */
+  removeSegment(pos) {
+    // check that there are more than 2 segments
+    if (this.segments.length > 2) {
+      if (pos == 1) {
+        this.segments.pop();
+      } else {
+        this.segments.shift();
+      }
+      this.update();
+    }
+  }
+
+  /**
+   * @brief calculate the lines between points
+   */
+  calcLines() {
+    // remove all the lines
+    while (this.lines.length > 0) {
+      this.lines[0].remove();
+      this.lines.shift();
+    }
+    // calculate the lines
+    for (let i = 0; i < this.circles.length-1; i++) {
+      this.lines.push(new Line(this.circles[i].center, this.circles[i+1].center,
+          0.5, this.circles[i].color));
+    }
+  }
+
+  /**
+   * @brief calculate the color for each point
+   */
+  calcCircles() {
+    // remove all the circles
+    while (this.circles.length > 0) {
+      this.circles[0].remove();
+      this.circles.shift();
+    }
+    // calculate the color for each point
+    for (let i = 0; i < this.points.length; i++) {
+      // calculate the color
+      const tempColor = hslToHex((this.points[i].data2/maxSpeed)*180,
+          100, 50);
+      this.circles.push(new Circle(this.points[i], 0.5,
+          tempColor, 0, tempColor));
+    }
   }
 
   /**
@@ -120,47 +173,55 @@ class Path {
    * @param {Array} tempPoints - points to space out
    */
   spacePoints() {
-    const curDistance = this.tempPoints[this.tempPoints.length-1].data;
-    // now we will space out the points evenly
-    this.points = [];
-    const newSpacing = 1 /
-        (Math.round(this.tempPoints[this.tempPoints.length-1].data /
-            spacing)-1);
+    // calculate the distance along the path
+    let curDist = 0;
+    this.tempPoints[0].data = 0;
+    for (let i = 1; i < this.tempPoints.length; i++) {
+      const p1 = this.tempPoints[i-1];
+      const p2 = this.tempPoints[i];
+      const dist = Vector.distance(p1, p2);
+      curDist += dist;
+      this.tempPoints[i].data = curDist;
+    }
+
+    // calculate the number of points we need
+    const numPoints = Math.floor(curDist / spacing);
+    const interval = 1 / numPoints;
+
     // map T onto t
-    for (let T = 0; T < 1.00001; T += newSpacing) {
-      const u = T * curDistance;
+    for (let T = 0; T < 1; T += interval) {
+      const u = T * this.tempPoints[this.tempPoints.length-1].data;
+      // find the index of the point with the largest distance less than u
       let closestIndex = 0;
-      // find the largest point with a distance less than or equal to u
-      // this should be done with a binary search in future
       for (let i = 0; i < this.tempPoints.length; i++) {
         if (this.tempPoints[i].data <= u) {
-          if (this.tempPoints[i].data > this.tempPoints[closestIndex].data) {
-            closestIndex = i;
-          }
+          closestIndex = i;
         }
       }
-      // if the point we found is an exact match, we can just save it
+
+      // if we have an exact match, just use that point
       if (this.tempPoints[closestIndex].data == u) {
         this.points.push(this.tempPoints[closestIndex]);
-        this.points[this.points.length - 1].data = u;
-      } else if (closestIndex == this.tempPoints.length - 1) {
-        this.points.push(this.tempPoints[closestIndex]);
-        this.points[this.points.length - 1].data = u;
-      } else {
+      } else { // otherwise, interpolate
         const p1 = this.tempPoints[closestIndex];
-        const p2 = this.tempPoints[closestIndex + 1];
-        const p3 = Vector.interpolate(u - p1.data, p1, p2);
-        const dist = Vector.distance(p1, p2);
-        // decide what the velocity should be
-        if ((u - p1.data) > dist/2) {
-          p3.data = p2.data;
+        const p2 = this.tempPoints[closestIndex+1];
+        const t = (u - p1.data) / (p2.data - p1.data);
+        const x = p1.x + t*(p2.x - p1.x);
+        const y = p1.y + t*(p2.y - p1.y);
+        const p3 = new Vector(x, y, u);
+        // calculate the speed at the new point
+        const dist1 = Vector.distance(p1, p3);
+        const dist2 = Vector.distance(p2, p3);
+        if (dist1 < dist2) {
+          p3.data2 = p1.data2;
         } else {
-          p3.data = p1.data;
+          p3.data2 = p2.data2;
         }
         this.points.push(p3);
-        this.points[this.points.length - 1].data = u;
       }
     }
+    this.points.push(this.tempPoints[this.tempPoints.length-1]);
+    // clear the temporary points
     this.tempPoints = [];
   }
 
@@ -191,31 +252,37 @@ class Path {
   }
 
   /**
-   * @brief initialize
+   * @brief update the path
    */
-  init() {
+  update() {
+    // clear the points
+    this.points = [];
     // calculate the points
     this.calcPoints();
     // calculate the speed of each point
     this.calcSpeed();
     // space out the points
     this.spacePoints();
-    // calculate the speed of each point
+    // generate the circles
+    this.calcCircles();
+    // generate the lines
+    this.calcLines();
   }
 };
 
 
-let p1 = new Vector(0, 0);
-let p2 = new Vector(20, 0);
-let p3 = new Vector(0, 20);
-let p4 = new Vector(20, 20);
-let p5 = new Vector(40, 20);
-let p6 = new Vector(40, 0);
+let p1 = new Vector(-32.3, -6.3);
+let p2 = new Vector(-41, 49);
+let p3 = new Vector(-42, 52);
+let p4 = new Vector(5.2, 6.12);
+
+
 let s1 = new Segment(p1, p2);
 let s2 = new Segment(p4, p3);
-let s3 = new Segment(p6, p5);
 let path = new Path(s1, s2);
 
-for (let i = 0; i < path.points.length; i++) {
-  new Circle(path.points[i], 0.5);
-}
+
+let p5 = new Vector(10, 10);
+let p6 = new Vector(20, 20);
+let s3 = new Segment(p5, p6);
+// path.addSegment(s3);
