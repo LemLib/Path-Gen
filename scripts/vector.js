@@ -1,5 +1,6 @@
 'use strict';
 
+
 /**
  * @brief Class for vectors
  */
@@ -100,7 +101,7 @@ class Vector {
     const angle = Math.atan2(v2.y - v1.y, v2.x - v1.x);
     // use the angle to find the x and y components of the vector
     const x = (d * Math.cos(angle)) + v1.x;
-    const y = (d * Math.sin(angle)) + v2.y;
+    const y = (d * Math.sin(angle)) + v1.y;
     return new Vector(x, y);
   }
 
@@ -113,3 +114,7 @@ class Vector {
     return Math.sqrt(this.x * this.x + this.y * this.y);
   }
 };
+
+
+// global path
+let path;

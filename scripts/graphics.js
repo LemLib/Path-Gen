@@ -1,12 +1,15 @@
 'use strict';
 
+
 const canvas = document.getElementById('fieldCanvas');
 const ctx = canvas.getContext('2d');
+
 
 // dev settings
 const imgTrueWidth = 147.8377757;
 const img = new Image;
 img.src = 'images/field.png';
+const fps = 60;
 
 // constants based on settings
 // these are not the settings you are looking for
@@ -255,10 +258,6 @@ function render() {
     ctx.closePath();
   }
 }
-
-
-// make the render function run regularly
-setInterval(render, 1000 / 60);
 
 
 /**

@@ -1,5 +1,6 @@
 'use strict';
 
+
 // dev settings
 const spacing = 2; // target inches between points
 const curvatureMultiplier = 100;
@@ -13,49 +14,34 @@ const maxSpeed = 100;
 class Spline {
   /**
    * @brief constructor
-   * @param {Vector} p1 - first point
-   * @param {Vector} p2 - second point
-   * @param {Vector} p3 - third point
-   * @param {Vector} p4 - fourth point
+   * @param {Vector} p0 - first point
+   * @param {Vector} p1 - second point
+   * @param {Vector} p2 - third point
+   * @param {Vector} p3 - fourth point
    */
-  constructor(p1, p2, p3, p4) {
+  constructor(p0, p1, p2, p3) {
+    this.p0 = p0;
     this.p1 = p1;
     this.p2 = p2;
     this.p3 = p3;
-    this.p4 = p4;
     this.points = [];
-    this.genPoints();
   }
 
   /**
    * @brief get the points on the spline
    */
   genPoints() {
+    // clear any exiting points
+    this.points = [];
     for (let t = 0; t <= 1; t += 0.01) {
       t = parseFloat(t.toPrecision(10));
       const tempIndex = parseFloat((t*100).toPrecision(10));
-      const x = (1-t)**3*this.p1.x + 3*t*(1-t)**2*this.p2.x +
-          3*t**2*(1-t)*this.p3.x + t**3*this.p4.x;
-      const y = (1-t)**3*this.p1.y + 3*t*(1-t)**2*this.p2.y +
-          3*t**2*(1-t)*this.p3.y + t**3*this.p4.y;
+      const x = (1-t)**3*this.p0.x + 3*t*(1-t)**2*this.p1.x +
+          3*t**2*(1-t)*this.p2.x + t**3*this.p3.x;
+      const y = (1-t)**3*this.p0.y + 3*t*(1-t)**2*this.p1.y +
+          3*t**2*(1-t)*this.p2.y + t**3*this.p3.y;
       this.points.push(new Vector(x, y));
     }
-  }
-};
-
-
-/**
- * @brief Segment class
- */
-class Segment {
-  /**
-   * @brief constructor
-   * @param {Vector} base - base point
-   * @param {Vector} control - control point
-   */
-  constructor(base, control) {
-    this.base = base;
-    this.control = control;
   }
 };
 
@@ -66,75 +52,127 @@ class Segment {
 class Path {
   /**
    * @brief constructor
-   * @param {Vector} s1 - first segment
-   * @param {Vector} s2 - second segment
+   * @param {Spline} spline - the first spline of the path
    */
-  constructor(s1, s2) {
-    this.segments = [s1, s2];
+  constructor(spline) {
+    this.splines = [spline];
     this.points = [];
     this.circles = [];
     this.lines = [];
+    this.controlCircles = [];
+    this.controlLines = [];
     this.update();
   }
 
   /**
-   * @brief add a segment to the path
-   * @param {Segment} segment - segment to add
+   * @brief add an endpoint to the path
+   * @param {Vector} point - the endpoint to add
    */
-  addSegment(segment) {
-    this.segments.push(segment);
+  addPoint(point) {
+    // the first point is the same as the endpoint on the previous spline
+    const p0 = this.splines[this.splines.length - 1].p3;
+    // calculate the first control point
+    // it is mirrored to the last control point of the previous spline
+    const oldControl = this.splines[this.splines.length -1].p2;
+    const p1 = Vector.interpolate(Vector.distance(oldControl, p0) * 2,
+        oldControl, p0);
+    // the third point will just be 24 inches above the end point
+    const p2 = new Vector(point.x, point.y - 24);
+    // the fourth point is the point passed as the function parameter
+    const p3 = point;
+    // update the path
+    this.splines.push(new Spline(p0, p1, p2, p3));
     this.update();
   }
 
+
   /**
-   * @brief remove a segment from the path
-   * @param {Number} pos - the first or last segment to remove (0 or 1)
-   * @Note this will only work if there are more than 2 segments
+   * @brief remove a point from the path
+   * @param {Number} pos the position (0 is back, 1 is front)
    */
-  removeSegment(pos) {
-    // check that there are more than 2 segments
-    if (this.segments.length > 2) {
+  removePoint(pos) {
+    if (this.splines.length > 1) {
       if (pos == 1) {
-        this.segments.pop();
-      } else {
-        this.segments.shift();
+        this.splines.pop();
+        this.update();
+      } else if (pos == 0) {
+        this.splines.shift();
+        this.update();
       }
-      this.update();
     }
   }
 
   /**
-   * @brief calculate the lines between points
+   * @brief calculate the positions of each circle
    */
-  calcLines() {
-    // remove all the lines
+  calcVisuals() {
+    // remove all existing circles
+    while (this.circles.length > 0) {
+      this.circles[0].remove();
+      this.circles.shift();
+    }
+    // create circles for each point on the path
+    const pointRadius = 0.5;
+    const pointBorderWidth = 0;
+    for (let i = 0; i < this.points.length; i++) {
+      const color = hslToHex((this.points[i].data2/maxSpeed)*180,
+          100, 50);
+      this.circles.push(new Circle(this.points[i], pointRadius,
+          color, pointBorderWidth, color));
+    }
+
+    // remove all existing lines
     while (this.lines.length > 0) {
       this.lines[0].remove();
       this.lines.shift();
     }
     // calculate the lines
+    const lineWidth = 0.5;
     for (let i = 0; i < this.circles.length-1; i++) {
       this.lines.push(new Line(this.circles[i].center, this.circles[i+1].center,
-          0.5, this.circles[i].color));
+          lineWidth, this.circles[i].color));
     }
-  }
 
-  /**
-   * @brief calculate the color for each point
-   */
-  calcCircles() {
-    // remove all the circles
-    while (this.circles.length > 0) {
-      this.circles[0].remove();
-      this.circles.shift();
+    // remove all existing control circles
+    while (this.controlCircles.length > 0) {
+      this.controlCircles[0].remove();
+      this.controlCircles.shift();
     }
-    // calculate the color for each point
-    for (let i = 0; i < this.points.length; i++) {
-      // calculate the color
-      const tempColor = hslToHex((this.points[i].data2/maxSpeed)*180,
-          100, 50);
-      this.circles.push(new Circle(this.points[i], 0.5,
-          tempColor, 0, tempColor));
+    // calculate the circles for every control point
+    const controlPointColor = 'rgba(50, 161, 68, 0.452)';
+    const controlPointRadius = 5;
+    const controlPointBorderColor = 'rgba(50, 161, 68, 0.452)';
+    const controlPointBorderWidth = 0;
+    for (let i = 0; i < this.splines.length; i++) {
+      if (i == 0) {
+        this.controlCircles.push(new Circle(this.splines[i].p0,
+            controlPointRadius, controlPointColor,
+            controlPointBorderWidth, controlPointBorderColor));
+      }
+      this.controlCircles.push(new Circle(this.splines[i].p1,
+          controlPointRadius, controlPointColor,
+          controlPointBorderWidth, controlPointBorderColor));
+      this.controlCircles.push(new Circle(this.splines[i].p2,
+          controlPointRadius, controlPointColor,
+          controlPointBorderWidth, controlPointBorderColor));
+      this.controlCircles.push(new Circle(this.splines[i].p3,
+          controlPointRadius, controlPointColor,
+          controlPointBorderWidth, controlPointBorderColor));
+    }
+
+    // remove all existing control point lines
+    const controlLineWidth = 0.5;
+    const controlLineColor = 'black';
+    while (this.controlLines.length > 0) {
+      this.controlLines[0].remove();
+      this.controlLines.shift();
+    }
+    // calculate the lines between the control points
+    for (let i = 0; i < this.splines.length; i++) {
+      this.controlLines.push(new Line(this.splines[i].p0, this.splines[i].p1,
+          controlLineWidth, controlLineColor));
+      this.controlLines.push(new Line(this.splines[i].p2, this.splines[i].p3,
+          controlLineWidth, controlLineColor));
     }
   }
 
@@ -231,11 +269,15 @@ class Path {
   calcPoints() {
     // calculate all the points with all the line segments
     this.tempPoints = [];
-    for (let i = 1; i < this.segments.length; i++) {
-      const spline = new Spline(this.segments[i-1].base,
-          this.segments[i-1].control, this.segments[i].control,
-          this.segments[i].base);
-      this.tempPoints = this.tempPoints.concat(spline.points);
+    for (let i = 0; i < this.splines.length; i++) {
+      this.splines[i].genPoints();
+      // unless the spline is the last one, remove the last point
+      if (i != this.splines.length-1) {
+        this.splines[i].points.pop();
+      }
+      this.tempPoints = this.tempPoints.concat(this.splines[i].points);
+      // get rid of the points after we are done with them
+      this.splines[i].points = [];
     }
 
     // calculate how far along the path each point is
@@ -263,26 +305,7 @@ class Path {
     this.calcSpeed();
     // space out the points
     this.spacePoints();
-    // generate the circles
-    this.calcCircles();
-    // generate the lines
-    this.calcLines();
+    // calculate the visuals
+    this.calcVisuals();
   }
 };
-
-
-let p1 = new Vector(-32.3, -6.3);
-let p2 = new Vector(-41, 49);
-let p3 = new Vector(-42, 52);
-let p4 = new Vector(5.2, 6.12);
-
-
-let s1 = new Segment(p1, p2);
-let s2 = new Segment(p4, p3);
-let path = new Path(s1, s2);
-
-
-let p5 = new Vector(10, 10);
-let p6 = new Vector(20, 20);
-let s3 = new Segment(p5, p6);
-// path.addSegment(s3);
