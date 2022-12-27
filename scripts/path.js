@@ -1,13 +1,6 @@
 'use strict';
 
 
-// dev settings
-const spacing = 2; // target inches between points
-const curvatureMultiplier = 100;
-const decel = 100;
-const maxSpeed = 100;
-
-
 /**
  * @brief Spline class
  */
@@ -112,8 +105,6 @@ class Path {
       this.circles.shift();
     }
     // create circles for each point on the path
-    const pointRadius = 0.5;
-    const pointBorderWidth = 0;
     for (let i = 0; i < this.points.length; i++) {
       const color = hslToHex((this.points[i].data2/maxSpeed)*180,
           100, 50);
@@ -127,7 +118,6 @@ class Path {
       this.lines.shift();
     }
     // calculate the lines
-    const lineWidth = 0.5;
     for (let i = 0; i < this.circles.length-1; i++) {
       this.lines.push(new Line(this.circles[i].center, this.circles[i+1].center,
           lineWidth, this.circles[i].color));
@@ -139,10 +129,6 @@ class Path {
       this.controlCircles.shift();
     }
     // calculate the circles for every control point
-    const controlPointColor = 'rgba(50, 161, 68, 0.452)';
-    const controlPointRadius = 5;
-    const controlPointBorderColor = 'rgba(50, 161, 68, 0.452)';
-    const controlPointBorderWidth = 0;
     for (let i = 0; i < this.splines.length; i++) {
       if (i == 0) {
         this.controlCircles.push(new Circle(this.splines[i].p0,
@@ -161,8 +147,6 @@ class Path {
     }
 
     // remove all existing control point lines
-    const controlLineWidth = 0.5;
-    const controlLineColor = 'black';
     while (this.controlLines.length > 0) {
       this.controlLines[0].remove();
       this.controlLines.shift();
@@ -309,3 +293,7 @@ class Path {
     this.calcVisuals();
   }
 };
+
+
+// global path
+let path;
