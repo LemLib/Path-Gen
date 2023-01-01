@@ -215,10 +215,6 @@ function rightRelease(event) {
 
 
 document.onkeydown = function(event) {
-  // change the value of the new speed if the highlight list is not empty
-  console.log(event.key);
-  console.log(newSpeedText.text.length);
-
   // decide what to do based on the key pressed
   if (event.key == 'Backspace') {
     if (highlightList.length > 0) {
