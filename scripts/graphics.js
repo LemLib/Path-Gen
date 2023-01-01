@@ -72,6 +72,42 @@ class Rectangle {
   }
 
   /**
+   * @brief check if a shape is contained in the rectangle
+   * @param {Shape} shape the shape to check
+   * @return {bool} true if it contains the shape, false otherwise
+   */
+  contains(shape) {
+    let left = 0;
+    let right = 0;
+    if (this.start.x < this.end.x) {
+      left = this.start.x;
+      right = this.end.x;
+    } else {
+      left = this.end.x;
+      right = this.start.x;
+    }
+    let top = 0;
+    let bottom = 0;
+    if (this.start.y < this.end.y) {
+      bottom = this.start.y;
+      top = this.end.y;
+    } else {
+      bottom = this.end.y;
+      top = this.start.y;
+    }
+
+    // check if it contains the shape
+    if (shape.center.x > left && shape.center.x < right) {
+      if (shape.center.y > bottom && shape.center.y < top) {
+        return true;
+      }
+    }
+
+    // return false by default
+    return false;
+  }
+
+  /**
    * @brief remove the rectangle from the canvas
    */
   remove() {
@@ -211,21 +247,6 @@ function render() {
     ctx.closePath();
   }
 
-  // draw all rectangles
-  for (let i = 0; i < Rectangle.instances.length; i++) {
-    const rect = Rectangle.instances[i];
-    const start = coordToPx(rect.start);
-    const end = coordToPx(rect.end);
-    ctx.beginPath();
-    ctx.rect(start.x, start.y, end.x - start.x, end.y - start.y);
-    ctx.fillStyle = rect.color;
-    ctx.fill();
-    ctx.lineWidth = rect.borderWidth*imgPixelsPerInch;
-    ctx.strokeStyle = rect.borderColor;
-    ctx.stroke();
-    ctx.closePath();
-  }
-
   // draw all circles
   for (let i = 0; i < Circle.instances.length; i++) {
     const circle = Circle.instances[i];
@@ -237,7 +258,26 @@ function render() {
     ctx.fill();
     ctx.lineWidth = circle.borderWidth*imgPixelsPerInch;
     ctx.strokeStyle = circle.borderColor;
-    ctx.stroke();
+    if (circle.borderWidth != 0) {
+      ctx.stroke();
+    }
+    ctx.closePath();
+  }
+
+  // draw all rectangles
+  for (let i = 0; i < Rectangle.instances.length; i++) {
+    const rect = Rectangle.instances[i];
+    const start = coordToPx(rect.start);
+    const end = coordToPx(rect.end);
+    ctx.beginPath();
+    ctx.rect(start.x, start.y, end.x - start.x, end.y - start.y);
+    ctx.fillStyle = rect.color;
+    ctx.fill();
+    ctx.lineWidth = rect.borderWidth*imgPixelsPerInch;
+    ctx.strokeStyle = rect.borderColor;
+    if (rect.borderWidth != 0) {
+      ctx.stroke();
+    }
     ctx.closePath();
   }
 
@@ -271,3 +311,23 @@ function hslToHex(h, s, l) {
   };
   return `#${f(0)}${f(8)}${f(4)}`;
 };
+
+
+// create the newSpeedBox
+const newSpeedBox = new Rectangle(new Vector(0, 0), new Vector(0, 0),
+    'rgb(177, 127, 238)');
+const newSpeedText = new SimpleText(new Vector(0, 0), '', 'black', 8);
+
+
+/**
+ * @brief clear the highlighted points
+ */
+function clearHighlight() {
+  highlightList = [];
+  while (highlightCircles.length > 0) {
+    highlightCircles.pop().remove();
+  }
+  newSpeedBox.start = new Vector(0, 0);
+  newSpeedBox.end = new Vector(0, 0);
+  newSpeedText.text = '';
+}

@@ -2,6 +2,8 @@
 
 
 const canvasQuery = document.querySelector('canvas');
+const highlightRect = new Rectangle(new Vector(0, 0),
+    new Vector(0, 0), 'rgba(51, 51, 51, 0.705)');
 
 
 /**
@@ -22,6 +24,8 @@ function getCursorPosition(event) {
  * @param {Event} event - event object
  */
 function leftClick(event) {
+  // clear highlighted points
+  clearHighlight();
   // check if the mouse hit any of the control points
   let foundPoint = false;
   for (let i = 0; i < path.splines.length; i++) {
@@ -61,6 +65,8 @@ function leftClick(event) {
  * @param {Event} event - event object
  */
 function rightClick(event) {
+  // clear highlightList
+  clearHighlight();
   const mouse = getCursorPosition(event);
   const start = path.splines[0].p0;
   const end = path.splines[path.splines.length-1].p3;
@@ -76,8 +82,9 @@ function rightClick(event) {
 /**
  * @brief event fired when the mouse is dragged while left clicking
  * @param {Event} event - event object
+ * @param {Vector} start - where the mouse started to drag
  */
-function leftDrag(event) {
+function leftDrag(event, start) {
   const mouse = getCursorPosition(event);
   // update control point locations if they are being dragged
   for (let i = 0; i < path.splines.length; i++) {
@@ -93,7 +100,6 @@ function leftDrag(event) {
         path.splines[i-1].p2.y += dy;
         path.splines[i-1].p3 = new Vector(mouse.x, mouse.y, 0);
       }
-      // update the path
       path.update();
       break;
     } else if (path.splines[i].p1.data == 1) { // p1 needs to be dragged
@@ -104,7 +110,6 @@ function leftDrag(event) {
         path.splines[i-1].p2 = Vector.interpolate(dist*2, path.splines[i].p1,
             path.splines[i].p0);
       }
-      // update the path
       path.update();
       break;
     } else if (path.splines[i].p2.data == 1) { // p2 needs to be dragged
@@ -115,7 +120,6 @@ function leftDrag(event) {
         path.splines[i+1].p1 = Vector.interpolate(dist*2, path.splines[i].p2,
             path.splines[i].p3);
       }
-      // update the path
       path.update();
       break;
     } else if (path.splines[i].p3.data == 1) { // p3 needs to be dragged
@@ -130,7 +134,6 @@ function leftDrag(event) {
         path.splines[i+1].p1.x += dx;
         path.splines[i+1].p1.y += dy;
       }
-      // update the path
       path.update();
       break;
     }
@@ -141,9 +144,22 @@ function leftDrag(event) {
 /**
  * @brief event fired when the mouse is dragged while right clicking
  * @param {Event} event - event object
+ * @param {Vector} start - where the mouse started to drag
  */
-function rightDrag(event) {
-
+function rightDrag(event, start) {
+  highlightRect.start = start;
+  highlightRect.end = getCursorPosition(event);
+  clearHighlight();
+  // add all the highlighted points to the list
+  for (let i = 0; i < path.circles.length; i++) {
+    if (highlightRect.contains(path.circles[i])) {
+      highlightList.push(i);
+    }
+  }
+  for (let i = 0; i < highlightList.length; i++) {
+    highlightCircles.push(new Circle(path.points[highlightList[i]],
+        1, 'rgba(51, 51, 51, 0)', 1, 'rgba(51, 51, 51, 0.705)'));
+  }
 }
 
 
@@ -181,8 +197,50 @@ function leftRelease(event) {
  * @param {Event} event - event object
  */
 function rightRelease(event) {
+  // reset highlight square
+  highlightRect.start = new Vector(0, 0);
+  highlightRect.end = new Vector(0, 0);
 
+  // make a "textbox" appear if the highlight list is not empty
+  if (highlightList.length > 0) {
+    const mouse = getCursorPosition(event);
+    const start = new Vector(mouse.x+5, mouse.y+10);
+    const end = new Vector(start.x+15, start.y-10);
+    newSpeedBox.start = start;
+    newSpeedBox.end = end;
+    newSpeedText.position = new Vector(start.x, start.y - 8);
+    newSpeedText.text = '100';
+  }
 }
+
+
+document.onkeydown = function(event) {
+  // change the value of the new speed if the highlight list is not empty
+  console.log(event.key);
+  console.log(newSpeedText.text.length);
+
+  // decide what to do based on the key pressed
+  if (event.key == 'Backspace') {
+    if (highlightList.length > 0) {
+      if (newSpeedText.text != '') {
+        newSpeedText.text =
+          newSpeedText.text.substr(0, newSpeedText.text.length - 1);
+      }
+    }
+  } else if (event.key == 'Enter') {
+    if (highlightList.length > 0) {
+      // change the points on the path
+      for (let i = 0; i < highlightList.length; i++) {
+        path.points[highlightList[i]].data2 *=
+            (parseFloat(newSpeedText.text))/100;
+      }
+      path.calcVisuals();
+      clearHighlight();
+    }
+  } else {
+    newSpeedText.text += event.key;
+  }
+};
 
 
 /**
@@ -195,6 +253,8 @@ function rightRelease(event) {
 // dragging variables
 let leftDown = false;
 let rightDown = false;
+let leftDownStart = new Vector(0, 0);
+let rightDownStart = new Vector(0, 0);
 
 
 /**
@@ -205,9 +265,11 @@ canvasQuery.onmousedown = function(event) {
   if (event.button === 0) {
     leftClick(event);
     leftDown = true;
+    leftDownStart = getCursorPosition(event);
   } else if (event.button === 2) {
     rightClick(event);
     rightDown = true;
+    rightDownStart = getCursorPosition(event);
   }
 };
 
@@ -234,10 +296,10 @@ canvasQuery.onmouseup = function(event) {
  */
 canvasQuery.onmousemove = function(event) {
   if (leftDown) {
-    leftDrag(event);
+    leftDrag(event, leftDownStart);
   }
   if (rightDown) {
-    rightDrag(event);
+    rightDrag(event, rightDownStart);
   }
   mouseMove(event);
 };

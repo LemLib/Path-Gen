@@ -16,27 +16,27 @@
         <div class="sliderContainer">
             <input type="range" value="10" min="1" max="50" step="0.01" oninput="this.nextElementSibling.value = this.value" id="lookaheadSlider">
             <output class="text" id="lookaheadVal">10</output>
-            <label for="lookahead" class="text">Lookahead Distance</label>
+            <label for="lookaheadSlider" class="text">Lookahead Distance</label>
 
-            <input type="range" value="18" min="1" max="30" step="0.01" oninput="this.nextElementSibling.value = this.value" id="trackWidthoh">
+            <input type="range" value="18" min="1" max="30" step="0.01" oninput="this.nextElementSibling.value = this.value" id="trackWidthSlider">
             <output class="text" id="trackWidthVal" >18</output>
-            <label for="trackWidth" class="text">Track Width</label>
+            <label for="trackWidthSlider" class="text">Track Width</label>
 
             <input type="range" value="20" min="0" max="100" step="0.01" oninput="this.nextElementSibling.value = this.value" id="decelerationSlider">
             <output class="text" id="decelVal">20</output>
-            <label for="decel" class="text">Max Deceleration</label>
+            <label for="decelerationSlider" class="text">Max Deceleration</label>
 
-            <input type="range" value="62.83" min="0" max="100" step="0.01" oninput="this.nextElementSibling.value = this.value" id="maxSpeed">
+            <input type="range" value="62.83" min="0" max="100" step="0.01" oninput="this.nextElementSibling.value = this.value" id="maxSpeedSlider">
             <output class="text" id="maxSpeedVal">62.83</output>
-            <label for="maxSpeed" class="text">Max Speed</label>
+            <label for="maxSpeedSlider" class="text">Max Speed</label>
 
-            <input type="range" value="50" min="0.1" max="100" step="0.01" oninput="this.nextElementSibling.value = this.value" id="multiplier">
+            <input type="range" value="50" min="0.1" max="100" step="0.01" oninput="this.nextElementSibling.value = this.value" id="multiplierSlider">
             <output class="text" id="multiplierVal">50</output>
-            <label for="multiplier" class="text">Turn Multiplier</label>
+            <label for="multiplierSlider" class="text">Turn Multiplier</label>
             
-            <input type="range" value="5" min="0.1" max="10" step="0.01" oninput="this.nextElementSibling.value = this.value" id="deactivate">
+            <input type="range" value="5" min="0.1" max="10" step="0.01" oninput="this.nextElementSibling.value = this.value" id="deactivateSlider">
             <output class="text" id="deactivateVal">5</output>
-            <label for="deactivate" class="text">Deactivate Distance</label>
+            <label for="deactivateSlider" class="text">Deactivate Distance</label>
             
             <button type="button" id="downloadRobotBtn">Download Robot Data</button>
             <button type="button" id="downloadPathBtn">Download Path Data</button>

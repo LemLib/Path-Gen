@@ -87,11 +87,10 @@ class Path {
     if (this.splines.length > 1) {
       if (pos == 1) {
         this.splines.pop();
-        this.update();
       } else if (pos == 0) {
         this.splines.shift();
-        this.update();
       }
+      this.update();
     }
   }
 
@@ -106,7 +105,7 @@ class Path {
     }
     // create circles for each point on the path
     for (let i = 0; i < this.points.length; i++) {
-      const color = hslToHex((this.points[i].data2/maxSpeed)*180,
+      const color = hslToHex((this.points[i].data2/maxSpeedSlider.value)*180,
           100, 50);
       this.circles.push(new Circle(this.points[i], pointRadius,
           color, pointBorderWidth, color));
@@ -170,7 +169,7 @@ class Path {
       const p2 = this.tempPoints[i+1];
 
       const dist = Vector.distance(p1, p2);
-      const vel = Math.min(maxSpeed, curvatureMultiplier*dist);
+      const vel = Math.min(maxSpeedSlider.value, multiplierSlider.value*dist);
       this.tempPoints[i].data2 = vel;
 
       if (i == this.tempPoints.length - 2) {
@@ -185,7 +184,7 @@ class Path {
       const p1 = this.tempPoints[i-1];
 
       const dist = Vector.distance(p0, p1);
-      const vel = Math.sqrt(p0.data2**2 + 2*decel*dist);
+      const vel = Math.sqrt(p0.data2**2 + 2*decelerationSlider.value*dist);
       this.tempPoints[i-1].data2 = Math.min(vel, p1.data2);
     }
   }
@@ -281,6 +280,8 @@ class Path {
    * @brief update the path
    */
   update() {
+    // clear the highlight
+    clearHighlight();
     // clear the points
     this.points = [];
     // calculate the points
@@ -293,7 +294,3 @@ class Path {
     this.calcVisuals();
   }
 };
-
-
-// global path
-let path;
