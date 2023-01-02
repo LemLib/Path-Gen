@@ -160,6 +160,22 @@ class Path {
   }
 
   /**
+   * @brief calculate the deceleration of the robot at each point
+   */
+  calcDecel() {
+    // apply deceleration
+    this.points[this.points.length - 1].data2 = 0;
+    for (let i = this.points.length-1; i > 0; i--) {
+      const p0 = this.points[i];
+      const p1 = this.points[i-1];
+
+      const dist = Vector.distance(p0, p1);
+      const vel = Math.sqrt(p0.data2**2 + 2*decelerationSlider.value*dist);
+      this.points[i-1].data2 = Math.min(vel, p1.data2);
+    }
+  }
+
+  /**
    * @brief calculate the speed at all points on the path
    */
   calcSpeed() {
@@ -175,17 +191,6 @@ class Path {
       if (i == this.tempPoints.length - 2) {
         this.tempPoints[i+1].data2 = vel;
       }
-    }
-
-    // apply deceleration
-    this.tempPoints[this.tempPoints.length - 1].data2 = 0;
-    for (let i = this.tempPoints.length-1; i > 0; i--) {
-      const p0 = this.tempPoints[i];
-      const p1 = this.tempPoints[i-1];
-
-      const dist = Vector.distance(p0, p1);
-      const vel = Math.sqrt(p0.data2**2 + 2*decelerationSlider.value*dist);
-      this.tempPoints[i-1].data2 = Math.min(vel, p1.data2);
     }
   }
 
@@ -290,6 +295,8 @@ class Path {
     this.calcSpeed();
     // space out the points
     this.spacePoints();
+    // calculate the deceleration of each point
+    this.calcDecel();
     // calculate the visuals
     this.calcVisuals();
   }

@@ -214,6 +214,10 @@ function rightRelease(event) {
 }
 
 
+/**
+ * @brief event triggered whenever a keyboard button is pressed
+ * @param {Event} event - event object
+ */
 document.onkeydown = function(event) {
   // decide what to do based on the key pressed
   if (event.key == 'Backspace') {
@@ -230,12 +234,145 @@ document.onkeydown = function(event) {
         path.points[highlightList[i]].data2 *=
             (parseFloat(newSpeedText.text))/100;
       }
+      // semi-update the path and clear the highlight
+      path.calcDecel();
       path.calcVisuals();
       clearHighlight();
     }
   } else {
-    newSpeedText.text += event.key;
+    if (highlightList.length > 0) {
+      newSpeedText.text += event.key;
+    }
   }
+};
+
+
+const downloadRbt = document.getElementById('downloadRobotBtn');
+/**
+ * @brief event fired when the download robot button is clicked
+ */
+downloadRbt.onclick = function() {
+  // mega string
+  let out = '';
+
+  // log constants
+  out += lookaheadSlider.value + '\n';
+  out += deactivateSlider.value + '\n';
+
+  // log path points
+  for (let i = 0; i < path.points.length; i++) {
+    const x = path.points[i].x;
+    const y = path.points[i].y;
+    const velocity = path.points[i].data2;
+    out += x + ', ' + y + ', ' + velocity + '\n';
+  }
+
+  // download file
+  const blob = new Blob([out], {type: 'text/csv'});
+  if (window.navigator.msSaveOrOpenBlob) {
+    window.navigator.msSaveBlob(out, 'robot.txt');
+  } else {
+    const elem = window.document.createElement('a');
+    elem.href = window.URL.createObjectURL(blob);
+    elem.download = 'robot.txt';
+    document.body.appendChild(elem);
+    elem.click();
+    document.body.removeChild(elem);
+  }
+};
+
+
+const downloadPath = document.getElementById('downloadPathBtn');
+/**
+ * @brief event fired when the download path button is clicked
+ */
+downloadPath.onclick = function() {
+  // mega string
+  let out = '';
+
+  // output slider values
+  out += lookaheadSlider.value + '\n';
+  out += decelerationSlider.value + '\n';
+  out += maxSpeedSlider.value + '\n';
+  out += multiplierSlider.value + '\n';
+  out += deactivateSlider.value + '\n';
+
+  // output path spline control points
+  for (let i = 0; i < path.splines.length; i++) {
+    const p0 = path.splines[i].p0;
+    const p1 = path.splines[i].p1;
+    const p2 = path.splines[i].p2;
+    const p3 = path.splines[i].p3;
+    out += p0.x + ', ' + p0.y + ', ' + p1.x + ', ' + p1.y + ', ' +
+        p2.x + ', ' + p2.y + ', ' + p3.x + ', ' + p3.y + '\n';
+  }
+
+  // download file
+  const blob = new Blob([out], {type: 'text/csv'});
+  if (window.navigator.msSaveOrOpenBlob) {
+    window.navigator.msSaveBlob(out, 'path.txt');
+  }
+  const elem = window.document.createElement('a');
+  elem.href = window.URL.createObjectURL(blob);
+  elem.download = 'path.txt';
+  document.body.appendChild(elem);
+  elem.click();
+  document.body.removeChild(elem);
+};
+
+
+const uploadPath = document.getElementById('uploadPathBtn');
+/**
+ * @brief event fired when the upload path button is clicked
+ */
+uploadPath.onchange = function() {
+  // get the file
+  const file = uploadPath.files[0];
+
+  const reader = new FileReader();
+  let data = '';
+
+  // event fired when file reading finished
+  reader.onload=function() {
+    data = reader.result;
+    // split the data into lines
+    const lines = data.split('\n');
+
+    // get the slider values
+    lookaheadSlider.value = parseFloat(lines[0]);
+    decelerationSlider.value = parseFloat(lines[1]);
+    maxSpeedSlider.value = parseFloat(lines[2]);
+    multiplierSlider.value = parseFloat(lines[3]);
+    deactivateSlider.value = parseFloat(lines[4]);
+    // update their text values
+    lookaheadText.innerHTML = lookaheadSlider.value;
+    decelerationText.innerHTML = decelerationSlider.value;
+    maxSpeedText.innerHTML = maxSpeedSlider.value;
+    multiplierText.innerHTML = multiplierSlider.value;
+    deactivateText.innerHTML = deactivateSlider.value;
+
+    let i = 5;
+
+    // read splines
+    path.splines = [];
+    while (i < lines.length-1) {
+      // read spline
+      const line = lines[i].split(', ');
+      const p1 = new Vector(parseFloat(line[0]), parseFloat(line[1]));
+      const p2 = new Vector(parseFloat(line[2]), parseFloat(line[3]));
+      const p3 = new Vector(parseFloat(line[4]), parseFloat(line[5]));
+      const p4 = new Vector(parseFloat(line[6]), parseFloat(line[7]));
+      const spline = new Spline(p1, p2, p3, p4);
+      path.splines.push(spline);
+      i++;
+    }
+
+    // update the path
+    path.update();
+  };
+  reader.readAsText(this.files[0]);
+  // remove the file from the input
+  uploadPath.value = '';
 };
 
 
