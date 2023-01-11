@@ -377,6 +377,38 @@ uploadPath.onchange = function() {
 
 
 /**
+ * @brief fired when the lookahead distance slider is changed
+ */
+lookaheadSlider.onchange = function() {
+  path.update();
+};
+
+
+/**
+ * @brief fired when the deceleration slider is changed
+ */
+decelerationSlider.onchange = function() {
+  path.update();
+};
+
+
+/**
+ * @brief fired when the maximum speed slider is changed
+ */
+maxSpeedSlider.onchange = function() {
+  path.update();
+};
+
+
+/**
+ * @brief fired when the turn multiplier slider is changed
+ */
+multiplierSlider.onchange = function() {
+  path.update();
+};
+
+
+/**
  * Code below this point should not have to be changed
  * Its purpose is to set up the event listeners
  * and call the functions above
