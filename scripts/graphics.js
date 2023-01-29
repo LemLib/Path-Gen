@@ -24,12 +24,14 @@ class Line {
    * @param {Vector} end end point
    * @param {Number} width line width
    * @param {String} color line color (hex)
+   * @param {Bool} visible should the line be visible
    */
-  constructor(start, end, width = 1, color = 'black') {
+  constructor(start, end, width = 1, color = 'black', visible = true) {
     this.start = start;
     this.end = end;
     this.width = width;
     this.color = color;
+    this.visible = visible;
     this.index = Line.instances.length;
     Line.instances.push(this);
   }
@@ -59,14 +61,16 @@ class Rectangle {
    * @param {String} color fill color (hex)
    * @param {Number} borderWidth border width
    * @param {String} borderColor border color (hex)
+   * @param {Bool} visible should the rectangle be visible
    */
   constructor(start, end, color = 'black',
-      borderWidth = 0, borderColor = 'black') {
+      borderWidth = 0, borderColor = 'black', visible = true) {
     this.start = start;
     this.end = end;
     this.color = color;
     this.borderWidth = borderWidth;
     this.borderColor = borderColor;
+    this.visible = visible;
     this.index = Rectangle.instances.length;
     Rectangle.instances.push(this);
   }
@@ -132,14 +136,16 @@ class Circle {
    * @param {String} color fill color (hex)
    * @param {Number} borderWidth border width
    * @param {String} borderColor border color (hex)
+   * @param {Bool} visible should the circle be visible
    */
   constructor(center, radius, color = 'black',
-      borderWidth = 0, borderColor = 'black') {
+      borderWidth = 0, borderColor = 'black', visible = true) {
     this.center = center;
     this.radius = radius;
     this.color = color;
     this.borderWidth = borderWidth;
     this.borderColor = borderColor;
+    this.visible = visible;
     this.index = Circle.instances.length;
     Circle.instances.push(this);
   }
@@ -169,13 +175,16 @@ class SimpleText {
    * @param {String} color text color (hex)
    * @param {Number} size text size
    * @param {String} font text font
+   * @param {Bool} visible should the text be visible
    */
-  constructor(position, text, color = 'black', size = 12, font = 'Arial') {
+  constructor(position, text, color = 'black', size = 12, font = 'Arial',
+      visible = true) {
     this.position = position;
     this.text = text;
     this.color = color;
     this.size = size;
     this.font = font;
+    this.visible = visible;
     this.index = SimpleText.instances.length;
     SimpleText.instances.push(this);
   }
@@ -235,61 +244,69 @@ function render() {
 
   // draw all lines
   for (let i = 0; i < Line.instances.length; i++) {
-    const line = Line.instances[i];
-    const start = coordToPx(line.start);
-    const end = coordToPx(line.end);
-    ctx.beginPath();
-    ctx.moveTo(start.x, start.y);
-    ctx.lineTo(end.x, end.y);
-    ctx.lineWidth = line.width*imgPixelsPerInch;
-    ctx.strokeStyle = line.color;
-    ctx.stroke();
-    ctx.closePath();
+    if (Line.instances[i].visible) {
+      const line = Line.instances[i];
+      const start = coordToPx(line.start);
+      const end = coordToPx(line.end);
+      ctx.beginPath();
+      ctx.moveTo(start.x, start.y);
+      ctx.lineTo(end.x, end.y);
+      ctx.lineWidth = line.width*imgPixelsPerInch;
+      ctx.strokeStyle = line.color;
+      ctx.stroke();
+      ctx.closePath();
+    }
   }
 
   // draw all circles
   for (let i = 0; i < Circle.instances.length; i++) {
-    const circle = Circle.instances[i];
-    const center = coordToPx(circle.center);
-    ctx.beginPath();
-    ctx.arc(center.x, center.y, circle.radius * imgPixelsPerInch,
-        0, 2 * Math.PI);
-    ctx.fillStyle = circle.color;
-    ctx.fill();
-    ctx.lineWidth = circle.borderWidth*imgPixelsPerInch;
-    ctx.strokeStyle = circle.borderColor;
-    if (circle.borderWidth != 0) {
-      ctx.stroke();
+    if (Circle.instances[i].visible) {
+      const circle = Circle.instances[i];
+      const center = coordToPx(circle.center);
+      ctx.beginPath();
+      ctx.arc(center.x, center.y, circle.radius * imgPixelsPerInch,
+          0, 2 * Math.PI);
+      ctx.fillStyle = circle.color;
+      ctx.fill();
+      ctx.lineWidth = circle.borderWidth*imgPixelsPerInch;
+      ctx.strokeStyle = circle.borderColor;
+      if (circle.borderWidth != 0) {
+        ctx.stroke();
+      }
+      ctx.closePath();
     }
-    ctx.closePath();
   }
 
   // draw all rectangles
   for (let i = 0; i < Rectangle.instances.length; i++) {
-    const rect = Rectangle.instances[i];
-    const start = coordToPx(rect.start);
-    const end = coordToPx(rect.end);
-    ctx.beginPath();
-    ctx.rect(start.x, start.y, end.x - start.x, end.y - start.y);
-    ctx.fillStyle = rect.color;
-    ctx.fill();
-    ctx.lineWidth = rect.borderWidth*imgPixelsPerInch;
-    ctx.strokeStyle = rect.borderColor;
-    if (rect.borderWidth != 0) {
-      ctx.stroke();
+    if (Rectangle.instances[i].visible) {
+      const rect = Rectangle.instances[i];
+      const start = coordToPx(rect.start);
+      const end = coordToPx(rect.end);
+      ctx.beginPath();
+      ctx.rect(start.x, start.y, end.x - start.x, end.y - start.y);
+      ctx.fillStyle = rect.color;
+      ctx.fill();
+      ctx.lineWidth = rect.borderWidth*imgPixelsPerInch;
+      ctx.strokeStyle = rect.borderColor;
+      if (rect.borderWidth != 0) {
+        ctx.stroke();
+      }
+      ctx.closePath();
     }
-    ctx.closePath();
   }
 
   // draw all texts
   for (let i = 0; i < SimpleText.instances.length; i++) {
-    const text = SimpleText.instances[i];
-    const position = coordToPx(text.position);
-    ctx.beginPath();
-    ctx.font = text.size * imgPixelsPerInch + 'px ' + text.font;
-    ctx.fillStyle = text.color;
-    ctx.fillText(text.text, position.x, position.y);
-    ctx.closePath();
+    if (SimpleText.instances[i].visible) {
+      const text = SimpleText.instances[i];
+      const position = coordToPx(text.position);
+      ctx.beginPath();
+      ctx.font = text.size * imgPixelsPerInch + 'px ' + text.font;
+      ctx.fillStyle = text.color;
+      ctx.fillText(text.text, position.x, position.y);
+      ctx.closePath();
+    }
   }
 }
 

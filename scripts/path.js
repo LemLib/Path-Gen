@@ -48,12 +48,14 @@ class Path {
    * @param {Spline} spline - the first spline of the path
    */
   constructor(spline) {
+    this.visible = true;
     this.splines = [spline];
     this.points = [];
     this.circles = [];
     this.lines = [];
     this.controlCircles = [];
     this.controlLines = [];
+    this.targetFacing = new Circle(new Vector(0, 0), 5, 'rgba(255,0,0,0.5)');
     this.update();
   }
 
@@ -77,7 +79,6 @@ class Path {
     this.splines.push(new Spline(p0, p1, p2, p3));
     this.update();
   }
-
 
   /**
    * @brief remove a point from the path
@@ -299,5 +300,29 @@ class Path {
     this.calcDecel();
     // calculate the visuals
     this.calcVisuals();
+  }
+
+  /**
+   * @brief set the path visibility
+   * @param {Bool} visible - whether the path is visible
+   */
+  setVisible(visible) {
+    this.visible = visible;
+    // circles
+    for (let i = 0; i < this.circles.length; i++) {
+      this.circles[i].visible = visible;
+    }
+    // lines
+    for (let i = 0; i < this.lines.length; i++) {
+      this.lines[i].visible = visible;
+    }
+    // control circles
+    for (let i = 0; i < this.controlCircles.length; i++) {
+      this.controlCircles[i].visible = visible;
+    }
+    // control lines
+    for (let i = 0; i < this.controlLines.length; i++) {
+      this.controlLines[i].visible = visible;
+    }
   }
 };

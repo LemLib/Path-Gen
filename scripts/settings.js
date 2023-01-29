@@ -13,6 +13,7 @@ const maxSpeedText = document.getElementById('maxSpeedVal');
 const multiplierText = document.getElementById('multiplierVal');
 const deactivateText = document.getElementById('deactivateVal');
 
+let mode = 0; // 0: create; 1: debug
 let path;
 let highlightList = [];
 let highlightCircles = [];
