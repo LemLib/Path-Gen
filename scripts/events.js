@@ -275,41 +275,6 @@ document.onkeydown = function(event) {
 };
 
 
-const downloadRbt = document.getElementById('downloadRobotBtn');
-/**
- * @brief event fired when the download robot button is clicked
- */
-downloadRbt.onclick = function() {
-  // mega string
-  let out = '';
-
-  // log constants
-  out += lookaheadSlider.value + '\n';
-  out += deactivateSlider.value + '\n';
-
-  // log path points
-  for (let i = 0; i < path.points.length; i++) {
-    const x = path.points[i].x;
-    const y = path.points[i].y;
-    const velocity = path.points[i].data2;
-    out += x + ', ' + y + ', ' + velocity + '\n';
-  }
-
-  // download file
-  const blob = new Blob([out], {type: 'text/csv'});
-  if (window.navigator.msSaveOrOpenBlob) {
-    window.navigator.msSaveBlob(out, 'robot.txt');
-  } else {
-    const elem = window.document.createElement('a');
-    elem.href = window.URL.createObjectURL(blob);
-    elem.download = 'robot.txt';
-    document.body.appendChild(elem);
-    elem.click();
-    document.body.removeChild(elem);
-  }
-};
-
-
 const downloadPath = document.getElementById('downloadPathBtn');
 /**
  * @brief event fired when the download path button is clicked
@@ -318,12 +283,33 @@ downloadPath.onclick = function() {
   // mega string
   let out = '';
 
+  // log data the robot uses
+  // log constants
+  out += lookaheadSlider.value + '\n';
+  out += deactivateSlider.value + '\n';
+  // output target facing point
+  out += path.targetFacing.center.x + ', ' +
+      path.targetFacing.center.y + '\n';
+  // log path points
+  for (let i = 0; i < path.points.length; i++) {
+    const x = path.points[i].x;
+    const y = path.points[i].y;
+    const velocity = path.points[i].data2;
+    out += x + ', ' + y + ', ' + velocity + '\n';
+  }
+  out += 'endData\n';
+
+  // log data the generator uses
   // output slider values
   out += lookaheadSlider.value + '\n';
   out += decelerationSlider.value + '\n';
   out += maxSpeedSlider.value + '\n';
   out += multiplierSlider.value + '\n';
   out += deactivateSlider.value + '\n';
+
+  // output target facing point
+  out += path.targetFacing.center.x + ', ' +
+        path.targetFacing.center.y + '\n';
 
   // output path spline control points
   for (let i = 0; i < path.splines.length; i++) {
@@ -366,12 +352,18 @@ uploadPath.onchange = function() {
     // split the data into lines
     const lines = data.split('\n');
 
+    // find the line where the path data starts
+    let i = 0;
+    while (lines[i] != 'endData') {
+      i++;
+    }
+
     // get the slider values
-    lookaheadSlider.value = parseFloat(lines[0]);
-    decelerationSlider.value = parseFloat(lines[1]);
-    maxSpeedSlider.value = parseFloat(lines[2]);
-    multiplierSlider.value = parseFloat(lines[3]);
-    deactivateSlider.value = parseFloat(lines[4]);
+    lookaheadSlider.value = parseFloat(lines[i+1]);
+    decelerationSlider.value = parseFloat(lines[i+2]);
+    maxSpeedSlider.value = parseFloat(lines[i+3]);
+    multiplierSlider.value = parseFloat(lines[i+4]);
+    deactivateSlider.value = parseFloat(lines[i+5]);
     // update their text values
     lookaheadText.innerHTML = lookaheadSlider.value;
     decelerationText.innerHTML = decelerationSlider.value;
@@ -379,7 +371,12 @@ uploadPath.onchange = function() {
     multiplierText.innerHTML = multiplierSlider.value;
     deactivateText.innerHTML = deactivateSlider.value;
 
-    let i = 5;
+    // get the location of the target facing point
+    const targetLine = lines[i+6].split(', ');
+    path.targetFacing.center = new Vector(parseFloat(targetLine[0]),
+        parseFloat(targetLine[1]), 0);
+
+    i += 7;
 
     // read splines
     path.splines = [];
