@@ -283,13 +283,6 @@ downloadPath.onclick = function() {
   // mega string
   let out = '';
 
-  // log data the robot uses
-  // log constants
-  out += lookaheadSlider.value + '\n';
-  out += deactivateSlider.value + '\n';
-  // output target facing point
-  out += path.targetFacing.center.x + ', ' +
-      path.targetFacing.center.y + '\n';
   // log path points
   for (let i = 0; i < path.points.length; i++) {
     const x = path.points[i].x;
