@@ -290,7 +290,7 @@ downloadPath.onclick = function() {
     const velocity = path.points[i].data2;
     out += x + ', ' + y + ', ' + velocity + '\n';
   }
-  out += 'endData\n';
+  out += 'endData' + '\n';
 
   // log data the generator uses
   // output slider values
