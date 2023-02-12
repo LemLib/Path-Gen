@@ -277,12 +277,11 @@ downloadPath.onclick = function() {
   }
   // create a "ghost point" at the end of the path to make stopping nicer
   const lastPoint = path.points[path.points.length-1];
-  const lastControl = path.splines[path.splines.length-1].p3;
+  const lastControl = path.splines[path.splines.length-1].p2;
   const ghostPoint = Vector.interpolate(
       Vector.distance(lastControl, lastPoint) + 20, lastControl, lastPoint);
   out += ghostPoint.x + ', ' + ghostPoint.y + ', 0\n';
   out += 'endData\n';
-
 
   // log data the generator uses
   // output slider values
@@ -291,10 +290,6 @@ downloadPath.onclick = function() {
   out += maxSpeedSlider.value + '\n';
   out += multiplierSlider.value + '\n';
   out += deactivateSlider.value + '\n';
-
-  // output target facing point
-  out += path.targetFacing.center.x + ', ' +
-        path.targetFacing.center.y + '\n';
 
   // output path spline control points
   for (let i = 0; i < path.splines.length; i++) {
