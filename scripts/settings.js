@@ -1,17 +1,13 @@
 /**
  * Global objects
  */
-const lookaheadSlider = document.getElementById('lookaheadSlider');
 const decelerationSlider = document.getElementById('decelerationSlider');
 const maxSpeedSlider = document.getElementById('maxSpeedSlider');
 const multiplierSlider = document.getElementById('multiplierSlider');
-const deactivateSlider = document.getElementById('deactivateSlider');
 
-const lookaheadText = document.getElementById('lookaheadVal');
 const decelerationText = document.getElementById('decelVal');
 const maxSpeedText = document.getElementById('maxSpeedVal');
 const multiplierText = document.getElementById('multiplierVal');
-const deactivateText = document.getElementById('deactivateVal');
 
 let mode = 0; // 0: create; 1: debug
 let path;

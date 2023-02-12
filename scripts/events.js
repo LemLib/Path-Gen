@@ -285,11 +285,9 @@ downloadPath.onclick = function() {
 
   // log data the generator uses
   // output slider values
-  out += lookaheadSlider.value + '\n';
   out += decelerationSlider.value + '\n';
   out += maxSpeedSlider.value + '\n';
   out += multiplierSlider.value + '\n';
-  out += deactivateSlider.value + '\n';
 
   // output path spline control points
   for (let i = 0; i < path.splines.length; i++) {
@@ -339,24 +337,15 @@ uploadPath.onchange = function() {
     }
 
     // get the slider values
-    lookaheadSlider.value = parseFloat(lines[i+1]);
-    decelerationSlider.value = parseFloat(lines[i+2]);
-    maxSpeedSlider.value = parseFloat(lines[i+3]);
-    multiplierSlider.value = parseFloat(lines[i+4]);
-    deactivateSlider.value = parseFloat(lines[i+5]);
+    decelerationSlider.value = parseFloat(lines[i+1]);
+    maxSpeedSlider.value = parseFloat(lines[i+2]);
+    multiplierSlider.value = parseFloat(lines[i+3]);
     // update their text values
-    lookaheadText.innerHTML = lookaheadSlider.value;
     decelerationText.innerHTML = decelerationSlider.value;
     maxSpeedText.innerHTML = maxSpeedSlider.value;
     multiplierText.innerHTML = multiplierSlider.value;
-    deactivateText.innerHTML = deactivateSlider.value;
 
-    // get the location of the target facing point
-    const targetLine = lines[i+6].split(', ');
-    path.targetFacing.center = new Vector(parseFloat(targetLine[0]),
-        parseFloat(targetLine[1]), 0);
-
-    i += 7;
+    i += 4;
 
     // read splines
     path.splines = [];
