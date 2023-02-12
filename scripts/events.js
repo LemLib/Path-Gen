@@ -283,6 +283,7 @@ downloadPath.onclick = function() {
   out += ghostPoint.x + ', ' + ghostPoint.y + ', 0\n';
   out += 'endData\n';
 
+
   // log data the generator uses
   // output slider values
   out += lookaheadSlider.value + '\n';
