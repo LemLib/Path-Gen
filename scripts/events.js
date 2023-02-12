@@ -54,13 +54,6 @@ function leftClick(event) {
       }
     }
 
-    // check if the mouse hit the target point
-    if (Vector.distance(path.targetFacing.center, mouse) < 5 &&
-          foundPoint == false) {
-      path.targetFacing.center.data = 1;
-      foundPoint = true;
-    }
-
     // if no point was clicked on, add a new point to the spline
     if (foundPoint == false) {
       path.addPoint(getCursorPosition(event));
@@ -150,12 +143,6 @@ function leftDrag(event, start) {
         break;
       }
     }
-
-    // update the target facing point
-    if (path.targetFacing.center.data == 1) {
-      path.targetFacing.center = mouse;
-      path.targetFacing.center.data = 1;
-    }
   }
 }
 
@@ -211,8 +198,6 @@ function leftRelease(event) {
       path.splines[i].p2.data = 0;
       path.splines[i].p3.data = 0;
     }
-    // set the target point to not dragging
-    path.targetFacing.center.data = 0;
   }
 }
 
@@ -290,6 +275,12 @@ downloadPath.onclick = function() {
     const velocity = path.points[i].data2;
     out += x + ', ' + y + ', ' + velocity + '\n';
   }
+  // create a "ghost point" at the end of the path to make stopping nicer
+  const lastPoint = path.points[path.points.length-1];
+  const lastControl = path.splines[path.splines.length-1].p3;
+  const ghostPoint = Vector.interpolate(
+      Vector.distance(lastControl, lastPoint) + 20, lastControl, lastPoint);
+  out += ghostPoint.x + ', ' + ghostPoint.y + ', 0\n';
   out += 'endData\n';
 
   // log data the generator uses

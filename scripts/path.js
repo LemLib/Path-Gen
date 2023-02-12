@@ -55,7 +55,6 @@ class Path {
     this.lines = [];
     this.controlCircles = [];
     this.controlLines = [];
-    this.targetFacing = new Circle(new Vector(0, 0), 5, 'rgba(255,0,0,0.5)');
     this.update();
   }
 
