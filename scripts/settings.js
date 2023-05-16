@@ -24,7 +24,7 @@ const spacing = 2; // target inches between points
 /**
  * Graphics settings
  */
-const imgTrueWidth = 147.8377757; // the width of the image in inches
+const imgTrueWidth = 144.061; // the width of the image in inches
 const img = new Image; // background image
 img.src = 'images/field.png';
 const fps = 60; // how many frames to render each second
