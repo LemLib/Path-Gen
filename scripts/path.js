@@ -70,8 +70,9 @@ class Path {
     const oldControl = this.splines[this.splines.length -1].p2;
     const p1 = Vector.interpolate(Vector.distance(oldControl, p0) * 2,
         oldControl, p0);
-    // the third point will just be 24 inches above the end point
-    const p2 = new Vector(point.x, point.y - 24);
+    // the second control point will be colinear to the passed point and p1
+    // the distance between p2 and the point passed is equal to the distance between p0 and the point passed and at most 18 inches or the distance between the point passed and p1 / 1.333
+    const p2 = Vector.interpolate(Math.min(Vector.distance(p0, point), Vector.distance(point, p1) / 1.333, 18), point, p1);
     // the fourth point is the point passed as the function parameter
     const p3 = point;
     // update the path
